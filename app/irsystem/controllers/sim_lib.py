@@ -32,3 +32,17 @@ def jaccard_sim(num_dict, jokes):
         result[doc] /= (len(set(jokes[doc]['categories']).union(set(query))))
     result = sorted(result.items(), key = lambda x : x[1], reverse = True)
     return result
+
+def jaccard_sim_json(query, inv_idx, jokes):
+    result = {}
+    for cat in query:
+        if cat in inv_idx:
+            doc_ids = inv_idx[cat]
+            for doc in doc_ids:
+                if doc not in result:
+                    result[doc] = 0
+                result[doc] += 1
+    for doc in result:
+        result[doc] /= (len(set(jokes[doc]['categories']).union(set(query))))
+    result = sorted(result.items(), key = lambda x : x[1], reverse = True)
+    return result

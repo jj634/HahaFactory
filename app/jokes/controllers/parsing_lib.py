@@ -51,20 +51,17 @@ def parse(query, inv_idx, cats, parse_dict):
             start = query.index(c)
             end = len(c)
             query = query[:start] + ' ' + query[start + end:]
-            print('after categories: ' + query + '\n')
     for var in diff_dict:
         if var in query:
             input_cats.append(diff_dict[var])
             start = query.index(var)
             end = len(var)
             query = query[:start] + ' ' + query[start + end:]
-            print('after dicts: ' + query + '\n')
 
     # list of categories for Jaccard
     input_cats = [parse_dict[c] for c in input_cats]
 
     # get toks
-    print('final query: ' + query + '\n')
     toks = tokenizer.tokenize(query)
     new_toks = []
     typos = []

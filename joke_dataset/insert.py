@@ -5,6 +5,13 @@ import json
 # 1. final_sizes.json
 # 2. inv_idx_cat.json
 
+# final_sizes recipe
+# 1. data scraping using ./getData/*.py
+# 2. ml using ./ml_score/assign_scores.py
+# 3. preprocessing - standardize, normalize, remove dups using ./preprocessing.py (makes final_score.json)
+# 4. tokenize using ./tokenizer.py (makes final_toks.json)
+# 5. precomputation - norms, sizes using ./precomputation.py (makes final_sizes.json)
+
 # NOTE: you have to go to the final_sizes and replace all ' with '' (that is two apostrophes)
 # this is because postgres is annoying
 

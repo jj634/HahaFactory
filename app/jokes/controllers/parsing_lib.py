@@ -3,6 +3,10 @@ from nltk.tokenize import TreebankWordTokenizer
 
 
 def parsing_dict(categories):
+    """
+    Returns dicionary mapping the lowered from of a category to the real 
+    category name. 
+    """
     result = {}
     for cat in categories:
         result[cat.lower()] = cat
@@ -39,9 +43,9 @@ def parse(query, inv_idx, cats, parse_dict):
             cats: lst of categories
             parse_dict: maps lowered cat names to real cat names
     """
-    inv_idx = [k for k, v in inv_idx.items()]
+    inv_idx = [k for k, v in inv_idx.items()]  # list of all tokens
     query = query.lower()
-    cats = [c.lower() for c in cats]
+    cats = [c.lower() for c in cats]  # lower categories to match lowered query
 
     input_cats = []
     # first parse out categories
@@ -51,6 +55,7 @@ def parse(query, inv_idx, cats, parse_dict):
             start = query.index(c)
             end = len(c)
             query = query[:start] + ' ' + query[start + end:]
+    # check for possible variations of category names
     for var in diff_dict:
         if var in query:
             input_cats.append(diff_dict[var])
@@ -66,13 +71,14 @@ def parse(query, inv_idx, cats, parse_dict):
     new_toks = []
     typos = []
 
+    # check if the tokens are valid (in the inv_idx), otherwise classified as typo
     for t in toks:
         if t not in inv_idx:
             typos.append(t)
         else:
             new_toks.append(t)
 
-    # try and get typos for toks and cats
+    # suggests a correction for every "typo" in query
     closest_toks = {}
     closest_cats = {}
     if typos:

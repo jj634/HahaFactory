@@ -74,9 +74,13 @@ def search():
     search_params['categories'] = categories if categories else ''
     search_params['size'] = size
 
+    # maps lowered text to actual category names
     parse_dict = pl.parsing_dict(cat_options)
     p_cats = []
+    tok_typos = None  # currently unused
+    cat_typos = None  # currently unused
     if query:
+        # next step: incorporate the thesaurus
         query, p_cats, tok_typos, cat_typos = pl.parse(
             query, inv_idx, cat_options, parse_dict)
     else:

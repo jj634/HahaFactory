@@ -27,7 +27,7 @@ def add_tokens(tokenizer, data):
     return result
 
 def update_json():
-    with open("final.json") as f:
+    with open("final_score.json") as f:
         data = json.load(f)
 
     num_jokes = len(data)
@@ -39,3 +39,5 @@ def update_json():
 
     with open('final_toks.json', 'w') as f:
         json.dump(data, f, indent = 4)
+
+update_json()

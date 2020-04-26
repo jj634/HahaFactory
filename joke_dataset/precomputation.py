@@ -180,8 +180,8 @@ def add_norms(jokes, norms):
    
 new_final = add_norms(data, doc_norms_lst)
 
-with open('final_norm.json', 'w') as f:
-    json.dump(new_final, f, indent=4)
+# with open('final_norm.json', 'w') as f:
+#     json.dump(new_final, f, indent=4)
 
 # def jaccard_sim(query, inv_idx, jokes):
 #     result = {}

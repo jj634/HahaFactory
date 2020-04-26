@@ -24,7 +24,7 @@ def jaccard_sim(query, num_dict, jokes):
         query: list of categories represented as strings
         num_dict: dictionary that maps joke id to its numerator in jaccard
             similarity measure.
-        jokes: dictionary of jokes mapping the joke id to the categories of tha tjoke id
+        jokes: dictionary of jokes mapping the joke id to the categories of that joke id
 
     """
     result = []

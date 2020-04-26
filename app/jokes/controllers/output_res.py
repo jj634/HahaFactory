@@ -33,7 +33,7 @@ def adj_minscore(min_score, results):
                               str(results[joke][1]*0.67 + (0.16/5*score_num))))
     jokes = Joke.query.filter(Joke.score >= min_score).all()
     blahblah = [
-        ({"text": joke.text, "categories": joke.categories, "score": str(joke.score), "maturity": joke.maturity}, "Similarity: " + str(0.16/5*float(joke.score))) for joke in jokes
+        ({"text": joke.text, "categories": joke.categories, "score": str(joke.score), "maturity": joke.maturity, "id": joke.id}, "Similarity: " + str(0.16/5*float(joke.score))) for joke in jokes
     ]
     final += blahblah  # used if no jac or cos joke outputs but min_score is provided
     return final

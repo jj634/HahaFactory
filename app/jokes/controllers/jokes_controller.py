@@ -1,14 +1,5 @@
 from . import *
 
-"""
-{
-  "text": "hi",
-  "categories": [1,2,3],
-  "score": 2,
-  "maturity": 2
-} 
-"""
-
 @jokes.route('/jokes', methods=['GET','POST'])
 def handle_jokes():
   if request.method == 'POST':
@@ -46,7 +37,7 @@ with open('./inv_idx_free.json') as f:
 def search():
 	cat_options = [cat.category for cat in Categories.query.all()]
 
-	query = request.args.get('search') #query = request.args.get('search', default= '')
+	query = request.args.get('search')
 	min_score = request.args.get('score')
 	categories = request.args.getlist('category')
 	req_size = request.args.getlist('size') or ""
@@ -60,9 +51,6 @@ def search():
 		size = 1000
 	elif req_size == "1":
 		size = 0 # figure out later
-
-	print("cat")
-	print(categories)
 
 	search_params = {}
 	search_params['key_words'] = query if query else ''
@@ -99,7 +87,7 @@ def search():
 			sim_measure = (element[1])
 			if doc_id not in results_jac:
 				results_jac[doc_id] = ({"text": joke.text, "categories": joke.categories, "score": str(
-					joke.score), "maturity": joke.maturity}, sim_measure)
+					joke.score), "maturity": joke.maturity, "id": joke.id}, sim_measure)
 
 
   # dictionary where key= joke_id, value = (joke_dict, cos_sim)
@@ -113,7 +101,7 @@ def search():
 			joke = Joke.query.filter_by(id=doc_id).first()
 			sim_measure = element[1]
 			results_cos[doc_id] = ({"text": joke.text, "categories": joke.categories, "score": str(
-				joke.score), "maturity": joke.maturity}, sim_measure)
+				joke.score), "maturity": joke.maturity, "id": joke.id}, sim_measure)
 	
 	results = ressy.weight(results_jac, results_cos)
 	

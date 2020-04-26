@@ -55,7 +55,7 @@ def search():
     # query = request.args.get('search', default= '')
     query = request.args.get('search')
     min_score = request.args.get('score')
-    categories = request.args.getlist('category')
+    categories = request.args.getlist('categories')
     req_size = request.args.getlist('size') or ""
 
     size = 1000000
@@ -67,12 +67,6 @@ def search():
         size = 1000
     elif req_size == "1":
         size = 0  # figure out later
-
-    search_params = {}
-    search_params['key_words'] = query if query else ''
-    search_params['min_score'] = min_score if min_score else ''
-    search_params['categories'] = categories if categories else ''
-    search_params['size'] = size
 
     # maps lowered text to actual category names
     parse_dict = pl.parsing_dict(cat_options)
@@ -138,15 +132,18 @@ def search():
         final = ressy.adj_minscore(float(min_score), results)
     else:
         # translate results into list without weighting for min_score
-        final = [(x[1][0], "Similarity: " + str(x[1][1]))
-                 for x in results.items()]
+        final = [{
+            "text": joke_meta["text"],
+            "categories": joke_meta["categories"],
+            "score": joke_meta["score"],
+            "maturity": joke_meta["maturity"],
+            "similarity": str(joke_sim)
+        } for joke_meta, joke_sim in results.values()]
 
     # sort results by decreasing sim
-    final = sorted(final, key=lambda x: (x[1]), reverse=True)
+    final = sorted(final, key=lambda x: (x["similarity"]), reverse=True)
     cat_options = sorted(cat_options)
     return {"jokes": final}
-
-    # Joke.testFunct()
 
 
 @jokes.route('/cat-options', methods=['GET'])

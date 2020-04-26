@@ -24,7 +24,7 @@ class App extends React.Component {
       isLoaded: false,
       jokes: [],
 
-      category: [],
+      categories: [],
       score: '',
       search: ''    
     }
@@ -37,7 +37,7 @@ class App extends React.Component {
   fetchResults(){ 
     const URLParams = new URLSearchParams(window.location.search)
 
-    const category_param = URLParams.getAll("category")
+    const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
 
@@ -51,7 +51,7 @@ class App extends React.Component {
           isLoaded: true,
           jokes: response.data.jokes,
 
-          category: category_param,
+          categories: category_param,
           score: score_param,
           search: search_param
         })
@@ -64,12 +64,12 @@ class App extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     const URLParams = new URLSearchParams(nextProps.location.search)
 
-    const category_param = URLParams.getAll("category")
+    const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
 
-    const cat_bool = category_param.sort().toString() !== (prevState.category).sort().toString()
-    return cat_bool || score_param !== prevState.score || search_param !== prevState.search 
+    const cat_updated = category_param.sort().toString() !== (prevState.categories).sort().toString()
+    return cat_updated || score_param !== prevState.score || search_param !== prevState.search 
       ? { isLoaded: false }
       : null
   }
@@ -90,7 +90,7 @@ class App extends React.Component {
               <img src={logo} className="App-logo" alt="logo" />
             </header>
 
-          <Form score = {this.state.score} categories = {this.state.category} search = {this.state.search} />
+          <Form score = {this.state.score} categories = {this.state.categories} search = {this.state.search} />
 
           </Col>
         </Row>

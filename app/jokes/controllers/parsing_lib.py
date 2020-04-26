@@ -14,12 +14,29 @@ def parsing_dict(categories):
 
 
 # possible variations of categories
+# can write a script to add plurals and ___ jokes but too lazy for now
 diff_dict = {
     'love and romance': 'love & romance',
     'family and parents': 'family, parents',
     'pickup line': 'pick-up line',
     'pickup lines': 'pick-up line',
-    'pick-up lines': 'pick-up line'
+    'pick-up lines': 'pick-up line',
+    'family': 'family, parents',
+    'parents': 'family, parents',
+    'parents': 'family, parents',
+    'food': 'food jokes',
+    'animal': 'animals',
+    'bar': 'bar jokes',
+    'blind': 'blind jokes',
+    'blonde': 'blonde jokes',
+    'computer': 'computers',
+    'heaven': 'heaven and hell',
+    'hell': 'heaven and hell',
+    'holidays': 'holiday',
+    'insult': 'insults',
+    'love': 'love & romance',
+    'romance': 'love & romance',
+    'police': 'police jokes'
 }
 
 tokenizer = TreebankWordTokenizer()

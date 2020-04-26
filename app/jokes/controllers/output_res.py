@@ -1,31 +1,38 @@
 from . import *
 
 
-def weight(jac_res, cos_res):
+def weight(jac_res, cos_res, min_score):
     """
     Combine results from jaccard and cosine similarity
     Inputs:
-        jac_res, cos_res: dictionary that matches joke_id to (joke_metadata,sim_score)
-        joke_metadata is a dictionary containing keys: text, categories, score, maturity
+        jac_res, cos_res: list of tuples (joke_id,sim_score)
 
     Output:
         combined dictionary that matches joke_id to (joke_metadata,sim_score)
         (this new sim_score is the average of jaccard and cosine. if a joke is not
         in one of the input dictionaries, its sim_score for that measure is 0.)
     """
-    results = {}
+    results = []
     jacky = set(jac_res.keys())  # haha get it? jac_key -> jacky
     cos_key = set(cos_res.keys())
-    both = jacky.intersection(cos_key)
-    cos_only = cos_key.difference(jacky)
-    jac_only = jacky.difference(cos_key)
-    for key in both:
-        results[key] = jac_res[key][0], jac_res[key][1] * \
-            0.5 + cos_res[key][1]*0.5
-    for key in cos_only:
-        results[key] = cos_res[key][0], cos_res[key][1] * 0.5
-    for key in jac_only:
-        results[key] = jac_res[key][0], jac_res[key][1] * 0.5
+
+    for joke_id in jacky.union(cos_key):
+        # to discuss - we are making 3 database calls for jaccard categories, this weighting, and metadata. that seems inefficient
+        joke_meta = Joke.query.filter_by(id=joke_id).first()
+
+        weighted_similarity = 0.33 * jac_res.get(joke_id,0)
+        weighted_similarity += 0.33 * cos_res.get(joke_id,0)
+        weighted_similarity += 0.33 * jac_res.get(joke_id,0) if float(joke_meta.score) >= float(min_score) else (0.16/5*joke_meta.score)
+
+        results.append({
+            "text": joke_meta.text,
+            "categories": joke_meta.categories,
+            "score": str(joke_meta.score),
+            "maturity": joke_meta.maturity,
+            "size": str(joke_meta.size),
+            "similarity": str(weighted_similarity)
+        })
+
     return results
 
 

@@ -55,7 +55,7 @@ def search():
 
     # query = request.args.get('search', default= '')
     query = request.args.get('search')
-    min_score = request.args.get('score')
+    min_score = request.args.get('score') or -1
     categories = request.args.getlist('categories')
     req_size = request.args.getlist('size') or ""
 
@@ -99,58 +99,34 @@ def search():
         # dictionary with key = joke_id and value = numerator
         numer_dict = jac.get_rel_jokes(cat_jokes)
 
-        rel_jokes = {}  # dictionary where key = joke_id, value = joke
+        # to discuss - this seems inefficient. do you have to filter one by one? theres prob a psql command
+        rel_jokes_meta = {}  # dictionary where key = joke_id, value = joke
         for joke_id in numer_dict.keys():
-            rel_jokes[joke_id] = Joke.query.filter_by(id=joke_id).first()
+            rel_jokes_meta[joke_id] = Joke.query.filter_by(id=joke_id).first()
 
-        for joke_id, joke_sim in jac.jaccard_sim(categories_list, numer_dict,rel_jokes):
-            joke_meta = rel_jokes[joke_id]
-            if joke_id not in results_jac:
-                results_jac[joke_id] = ({
-                    "text": joke_meta.text,
-                    "categories": joke_meta.categories,
-                    "score": str(joke_meta.score),
-                    "maturity": joke_meta.maturity
-                }, joke_sim)
-
+        results_jac = jac.jaccard_sim(categories_list, numer_dict,rel_jokes_meta)
+    
     
     #--------------------- COSINE ---------------------#
     # dictionary where key= joke_id, value = (joke_dict, cos_sim)
     results_cos = {}
+    print("QUERY IS: ---------")
+    print(query)
     if query:
-        # a list of (joke_id, cos_sim)
-        for joke_id, joke_sim in cos.fast_cossim(query, inv_idx, inv_idx_free):
-            joke_meta = Joke.query.filter_by(id=joke_id).first()
-            results_cos[joke_id] = ({
-                "text": joke_meta.text,
-                "categories": joke_meta.categories,
-                "score": str(joke_meta.score),
-                "maturity": joke_meta.maturity
-            }, joke_sim)
+        results_cos = cos.fast_cossim(query, inv_idx, inv_idx_free)
     
-    
-    #--------------------- WEIGHTING ---------------------#
-    results = ressy.weight(results_jac, results_cos)
 
-    final = None
-    if min_score:
-        final = ressy.adj_minscore(float(min_score), results)
-    else:
-        # translate results into list without weighting for min_score
-        final = [{
-            "text": joke_meta["text"],
-            "categories": joke_meta["categories"],
-            "score": joke_meta["score"],
-            "maturity": joke_meta["maturity"],
-            "similarity": str(joke_sim)
-        } for joke_meta, joke_sim in results.values()]
+    #--------------------- WEIGHTING & FORMATTING ---------------------#
+    results = ressy.weight(results_jac, results_cos, min_score)
 
 
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim
-    final = sorted(final, key=lambda x: (x["similarity"]), reverse=True)
+    results = sorted(results, key=lambda x: (x["similarity"]), reverse=True)
     cat_options = sorted(cat_options)
-    return {"jokes": final}
+
+
+    return {"jokes": results}
 
 
 @jokes.route('/cat-options', methods=['GET'])

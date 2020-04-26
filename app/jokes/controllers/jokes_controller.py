@@ -4,7 +4,6 @@ from . import cos_sim as cos
 from . import cat_jaccard as jac
 from . import output_res as ressy
 from . import *
-from nltk.tokenize import TreebankWordTokenizer
 
 
 """
@@ -69,16 +68,11 @@ def search():
     elif req_size == "1":
         size = 0  # figure out later
 
-    print("cat")
-    print(categories)
-
     search_params = {}
     search_params['key_words'] = query if query else ''
     search_params['min_score'] = min_score if min_score else ''
     search_params['categories'] = categories if categories else ''
     search_params['size'] = size
-
-    tokenizer = TreebankWordTokenizer()
 
     parse_dict = pl.parsing_dict(cat_options)
     p_cats = []

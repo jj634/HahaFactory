@@ -1,8 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {
-    withRouter
-} from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 import { Button, Form } from 'semantic-ui-react'
 import scores from '../images/scores';
@@ -122,7 +120,6 @@ class JokeForm extends React.Component {
                         </Form>
         )
     }
-
 }
 
 export default withRouter(JokeForm);

@@ -127,7 +127,7 @@ class JokeForm extends React.Component {
 
                             <Form.Group inline>
                                 <label>Length of Joke</label>
-                                {sizeList}
+                                {sizesList}
                             </Form.Group>
 
                             <Button class="ui button" type="submit">Go</Button>

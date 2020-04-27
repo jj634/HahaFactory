@@ -89,7 +89,6 @@ def search():
     else:
         query = []
     categories_list = categories + p_cats
-    categories_list = categories
     categories_list = list(set(categories_list))
 
     #--------------------- JACCARD ---------------------#

@@ -61,13 +61,13 @@ def search():
     print("original query ------")
     print(query)
     size = 1000000
-    if req_size == "s":
+    if req_size == "short":
         size = 10
-    elif req_size == "m":
+    elif req_size == "medium":
         size = 100
-    elif req_size == "l":
+    elif req_size == "long":
         size = 1000
-    elif req_size == "1":
+    elif req_size == "one-liner":
         size = 0  # figure out later
 
     #----------- PARSING -----------#

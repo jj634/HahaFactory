@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom'
 
-import { Button, Form } from 'semantic-ui-react'
+import { Button, Form, Radio } from 'semantic-ui-react'
 import scores from '../images/scores';
 import sizes from '../images/size';
 
@@ -16,7 +16,7 @@ class JokeForm extends React.Component {
             categories: this.props.categories, 
             search: this.props.search, 
             score: this.props.score, 
-            size: this.props.size, 
+            size: this.props.size,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -82,56 +82,57 @@ class JokeForm extends React.Component {
         );
 
         const sizesList = sizes.map ((size) => 
-            (
-                < Form.Radio
-                                    name = "size"
-                                    label={size}
-                                    defaultValue = {this.props.size}
-                                    checked = { size === this.state.size}
-                                    onChange = { this.handleChange }
-        />
-            ))
+            <Form.Radio
+                label = {size}
+                name = "size"
+                value = {size}
+                onChange = {this.handleChange}
+                checked = {size.toLowerCase() === this.state.size.toLowerCase()} 
+            />
+            )
+        
+        console.log(this.props.size === "Short")    
         return (
-                        <Form onSubmit={this.handleSubmit}>
-                            <Form.Input
-                                placeholder="Search"
-                                name="search"
-                                label="Keywords"
-                                type="text"
-                                onChange={this.handleChange}
-                                defaultValue={this.props.search} 
-                            />
+            <Form onSubmit={this.handleSubmit}>
+                <Form.Input
+                    placeholder="Search"
+                    name="search"
+                    label="Keywords"
+                    type="text"
+                    onChange={this.handleChange}
+                    defaultValue={this.props.search} 
+                />
 
-                            <Form.Dropdown
-                                closeOnChange
-                                placeholder="Select Categories"
-                                name="categories"
-                                label="Categories"
-                                multiple
-                                search
-                                selection
-                                options={categoryList}
-                                onChange={this.handleChange}
-                                defaultValue = {this.props.categories}
-                            />
+                <Form.Dropdown
+                    closeOnChange
+                    placeholder="Select Categories"
+                    name="categories"
+                    label="Categories"
+                    multiple
+                    search
+                    selection
+                    options={categoryList}
+                    onChange={this.handleChange}
+                    defaultValue = {this.props.categories}
+                />
 
-                            <Form.Dropdown
-                                placeholder="Select Minimum Score"
-                                name="score"
-                                label="Minimum Score"
-                                selection
-                                options={scoreList}
-                                onChange={this.handleChange}
-                                defaultValue = {this.props.score}
-                            />
+                <Form.Dropdown
+                    placeholder="Select Minimum Score"
+                    name="score"
+                    label="Minimum Score"
+                    selection
+                    options={scoreList}
+                    onChange={this.handleChange}
+                    defaultValue = {this.props.score}
+                />
 
-                            <Form.Group inline>
-                                <label>Length of Joke</label>
-                                {sizesList}
-                            </Form.Group>
+                <Form.Group inline>
+                    <label>Length of Joke</label>
+                    {sizesList}
+                </Form.Group>
 
-                            <Button class="ui button" type="submit">Go</Button>
-                        </Form>
+                <Button class="ui button" type="submit">Go</Button>
+            </Form>
         )
     }
 }

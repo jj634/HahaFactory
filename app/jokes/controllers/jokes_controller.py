@@ -69,7 +69,6 @@ def search():
     elif req_size == "1":
         size = 0  # figure out later
 
-
     #----------- PARSING -----------#
     # maps lowered text to actual category names
     parse_dict = pl.parsing_dict(cat_options)
@@ -82,13 +81,14 @@ def search():
                                                        cat_options, parse_dict)
     else:
         query = []
-    categories_list = categories + p_cats   
+    categories_list = categories + p_cats
     categories_list = list(set(categories_list))
-
 
     #--------------------- JACCARD ---------------------#
     # dictionary key = joke_id, value = (joke_dict, jac_sim)
     results_jac = {}
+    print("CATEGORIES ARE: --------")
+    print(categories_list)
     if categories_list:
         cat_jokes = {}  # dictionary where key = category, value = array of doc_ids with that category
         for cat in categories_list:  # for every category
@@ -104,8 +104,8 @@ def search():
         for joke_id in numer_dict.keys():
             rel_jokes_meta[joke_id] = Joke.query.filter_by(id=joke_id).first()
 
-        results_jac = jac.jaccard_sim(categories_list, numer_dict,rel_jokes_meta)
-    
+        results_jac = jac.jaccard_sim(
+            categories_list, numer_dict, rel_jokes_meta)
 
     #--------------------- COSINE ---------------------#
     # dictionary where key= joke_id, value = (joke_dict, cos_sim)
@@ -114,19 +114,16 @@ def search():
     print(query)
     if query:
         results_cos = cos.fast_cossim(query, inv_idx, inv_idx_free)
-    
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     print("size is:")
     print(size)
     results = ressy.weight(results_jac, results_cos, min_score, size)
 
-
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim
     results = sorted(results, key=lambda x: (x["similarity"]), reverse=True)
     cat_options = sorted(cat_options)
-
 
     return {"jokes": results}
 

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 
 import { Button, Form } from 'semantic-ui-react'
 import scores from '../images/scores';
-import length from '../images/length';
+import sizes from '../images/size';
 
 class JokeForm extends React.Component {
     constructor(props) {
@@ -16,7 +16,7 @@ class JokeForm extends React.Component {
             categories: this.props.categories, 
             search: this.props.search, 
             score: this.props.score, 
-            length: this.props.length, 
+            size: this.props.size, 
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -26,7 +26,6 @@ class JokeForm extends React.Component {
                 method: 'GET',
                 url: `http://localhost:5000/api/cat-options`
             })
-
             .then((response) => {
                 this.setState({
                     cat_options: response.data.categories, 
@@ -44,7 +43,7 @@ class JokeForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const { search, categories, score, length } = this.state
+        const { search, categories, score, size } = this.state
 
         const params = new URLSearchParams()
         if (this.state.search != null) params.append("search", search)
@@ -56,7 +55,7 @@ class JokeForm extends React.Component {
         }
 
         if (this.state.score != null) params.append("score", score)
-        if (this.state.length != null) params.append("length", length)
+        if (this.state.size != null) params.append("size", size)
 
         const url = '?'+params.toString()
         this.props.history.push({
@@ -82,13 +81,13 @@ class JokeForm extends React.Component {
             })
         );
 
-        const lengthList = length.map ((length) => 
+        const sizesList = size.map ((size) => 
             (
                 < Form.Radio
-                                    name = "length"
-                                    label={length}
-                                    defaultValue = {this.propslength}
-                                    checked = { length === this.props.length}
+                                    name = "size"
+                                    label={size}
+                                    defaultValue = {this.props.size}
+                                    checked = { size === this.props.size}
                                     onChange = { this.handleChange }
         />
             ))
@@ -127,8 +126,8 @@ class JokeForm extends React.Component {
                             />
 
                             <Form.Group inline>
-                                <label>Size</label>
-                                {lengthList}
+                                <label>Length of Joke</label>
+                                {sizeList}
                             </Form.Group>
 
                             <Button class="ui button" type="submit">Go</Button>

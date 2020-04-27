@@ -40,7 +40,7 @@ class App extends React.Component {
     const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
-    const length_param = URLParams.get("length")
+    const size_param = URLParams.get("size")
 
     axios({
       method: 'GET',
@@ -55,7 +55,7 @@ class App extends React.Component {
           categories: category_param,
           score: score_param,
           search: search_param, 
-          length: length_param
+          size: size_param
         })
       })
       .catch(err =>
@@ -69,10 +69,10 @@ class App extends React.Component {
     const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
-    const length_param = URLParams.get("length")
+    const size_param = URLParams.get("size")
 
     const cat_updated = category_param.sort().toString() !== (prevState.categories).sort().toString()
-    return cat_updated || score_param !== prevState.score || search_param !== prevState.search || length_param !== prevState.length
+    return cat_updated || score_param !== prevState.score || search_param !== prevState.search || size_param !== prevState.size
       ? { isLoaded: false }
       : null
   }
@@ -93,7 +93,7 @@ class App extends React.Component {
               <img src={logo} className="App-logo" alt="logo" />
             </header>
 
-          <Form score = {this.state.score} categories = {this.state.categories} search = {this.state.search} length = {this.state.length}/>
+          <Form score = {this.state.score} categories = {this.state.categories} search = {this.state.search} size = {this.state.size}/>
 
           </Col>
         </Row>

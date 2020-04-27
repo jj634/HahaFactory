@@ -15,7 +15,7 @@ def get_rel_jokes(inv_idx):
                 result[doc] += 1
     return result 
 
-def jaccard_sim(query, num_dict, jokes):
+def jaccard_sim(query, num_dict, jokes_meta):
     """
     Returns: a list of tuples where t[0] is the joke id and t[1] is
     the similarity measure.
@@ -24,12 +24,12 @@ def jaccard_sim(query, num_dict, jokes):
         query: list of categories represented as strings
         num_dict: dictionary that maps joke id to its numerator in jaccard
             similarity measure.
-        jokes: dictionary of jokes mapping the joke id to the categories of that joke id
+        jokes_meta: dictionary of jokes mapping the joke id to its metadata
 
     """
-    result = []
+    result = {}
     for doc in num_dict.keys():
-        jaccard_measure = num_dict[doc] / (len(set(jokes[doc].categories).union(set(query))))
-        result.append((doc, jaccard_measure))
-    result = sorted(result, key = lambda x : x[1], reverse = True)
+        jaccard_measure = num_dict[doc] / (len(set(jokes_meta[doc].categories).union(set(query))))
+        result[doc] = jaccard_measure
+    # result = sorted(result, key = lambda x : x[1], reverse = True)
     return result

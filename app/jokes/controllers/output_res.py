@@ -1,12 +1,13 @@
 from . import *
 
 
-def weight(jac_res, cos_res, min_score):
+def weight(jac_res, cos_res, min_score, max_size):
     """
     Combine results from jaccard and cosine similarity
     Inputs:
-        jac_res, cos_res: list of tuples (joke_id,sim_score)
-
+        jac_res, cos_res: dictionary mapping joke_id to sim_score
+        min_score: string
+        max_size: size limit for joke_meta.text
     Output:
         combined dictionary that matches joke_id to (joke_metadata,sim_score)
         (this new sim_score is the average of jaccard and cosine. if a joke is not
@@ -24,14 +25,15 @@ def weight(jac_res, cos_res, min_score):
         weighted_similarity += 0.33 * cos_res.get(joke_id,0)
         weighted_similarity += 0.33 * jac_res.get(joke_id,0) if float(joke_meta.score) >= float(min_score) else (0.16/5*joke_meta.score)
 
-        results.append({
-            "text": joke_meta.text,
-            "categories": joke_meta.categories,
-            "score": str(joke_meta.score),
-            "maturity": joke_meta.maturity,
-            "size": str(joke_meta.size),
-            "similarity": str(weighted_similarity)
-        })
+        if int(joke_meta.size) <= max_size:
+            results.append({
+                "text": joke_meta.text,
+                "categories": joke_meta.categories,
+                "score": str(joke_meta.score),
+                "maturity": joke_meta.maturity,
+                "size": str(joke_meta.size),
+                "similarity": str(weighted_similarity)
+            })
 
     return results
 

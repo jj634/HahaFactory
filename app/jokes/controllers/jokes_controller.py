@@ -57,7 +57,7 @@ def search():
     query = request.args.get('search')
     min_score = request.args.get('score') or -1
     categories = request.args.getlist('categories')
-    req_size = request.args.getlist('size') or ""
+    req_size = request.args.get('size') or ""
 
     size = 1000000
     if req_size == "s":
@@ -106,7 +106,7 @@ def search():
 
         results_jac = jac.jaccard_sim(categories_list, numer_dict,rel_jokes_meta)
     
-    
+
     #--------------------- COSINE ---------------------#
     # dictionary where key= joke_id, value = (joke_dict, cos_sim)
     results_cos = {}
@@ -117,7 +117,9 @@ def search():
     
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
-    results = ressy.weight(results_jac, results_cos, min_score)
+    print("size is:")
+    print(size)
+    results = ressy.weight(results_jac, results_cos, min_score, size)
 
 
     #--------------------- SORTING ---------------------#

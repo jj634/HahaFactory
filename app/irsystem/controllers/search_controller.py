@@ -15,7 +15,7 @@ net_id = "Jason Jung: jj634, Suin Jung: sj575, Winice Hui: wh394, Cathy Xin: cyx
 search_params = {}
 
 
-@irsystem.route('/', methods=['GET'])
+@irsystem.route('/prototype1', methods=['GET'])
 def search():
 	cat_options = [cat.category for cat in Categories.query.all()]
 
@@ -89,6 +89,6 @@ def search():
 	return render_template('search.html', name=project_name, netid=net_id, output_message=search_params, data=final, cat_options = cat_options)
 
 
-@irsystem.route('/react', methods=['GET'])
+@irsystem.route('/', methods=['GET'])
 def sendhome():
     return render_template('index.html')

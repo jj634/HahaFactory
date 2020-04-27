@@ -1,7 +1,7 @@
 from . import *
+import re
 
-
-def weight(jac_res, cos_res, min_score, max_size):
+def weight(jac_res, cos_res, min_score, min_size, max_size):
     """
     Combine results from jaccard and cosine similarity
     Inputs:
@@ -27,7 +27,21 @@ def weight(jac_res, cos_res, min_score, max_size):
         weighted_similarity += 0.33 * float(joke_meta.score)/5 if float(
             joke_meta.score) >= float(min_score) else (0.16/5*float(joke_meta.score))
 
-        if int(joke_meta.size) <= max_size:
+        if(min_size == -1):
+            if joke_meta.size <= 30:
+                text = joke_meta.text
+                sentence_list = re.split(r"(?<![A-Z])[.!?]\s+(?=[A-Z\"])", text)
+                
+                if(len(sentence_list) <= 1):
+                    results.append({
+                        "text": joke_meta.text,
+                        "categories": joke_meta.categories,
+                        "score": str(joke_meta.score),
+                        "maturity": joke_meta.maturity,
+                        "size": str(joke_meta.size),
+                        "similarity": str(weighted_similarity)
+                    })
+        elif int(joke_meta.size) <= max_size and int(joke_meta.size) >= min_size:
             results.append({
                 "text": joke_meta.text,
                 "categories": joke_meta.categories,

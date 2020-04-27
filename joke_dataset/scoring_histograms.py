@@ -2,8 +2,8 @@ import json
 import matplotlib.pyplot as plt
 
 def createScoreHistogram(data):
-    plt.hist(data, density=False, bins = 50)  # `density=False` displays counts, #change number of bins for num of bins on histogram
-    # plt.xlim(0, 5) #change limit of x axis (score)
+    plt.hist(data, density=False, bins = 100)  # `density=False` displays counts, #change number of bins for num of bins on histogram
+    plt.xlim(0, 500) #change limit of x axis (score)
     plt.ylabel('Number')
     plt.xlabel('Size')
     plt.show()

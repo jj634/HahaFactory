@@ -53,22 +53,28 @@ inv_idx = cos.inv_idx_trad(inv_idx_free)
 def search():
     cat_options = [cat.category for cat in Categories.query.all()]
 
-    # query = request.args.get('search', default= '')
     query = request.args.get('search')
     min_score = request.args.get('score') or -1
     categories = request.args.getlist('categories')
     req_size = request.args.get('size') or ""
+
     print("original query ------")
     print(query)
-    size = 1000000
-    if req_size == "short":
-        size = 10
-    elif req_size == "medium":
-        size = 100
-    elif req_size == "long":
-        size = 1000
-    elif req_size == "one-liner":
-        size = 0  # figure out later
+
+    min_size = 0
+    max_size = 1000000
+    if req_size == "Short":
+        min_size = 0
+        max_size = 50
+    elif req_size == "Medium":
+        min_size = 50
+        max_size = 105
+    elif req_size == "Long":
+        min_size = 105
+        max_size = 1000000
+    elif req_size == "One-Liner":
+        min_size = -1
+        max_size = -1
 
     #----------- PARSING -----------#
     # maps lowered text to actual category names
@@ -118,9 +124,7 @@ def search():
         results_cos = cos.fast_cossim(query, inv_idx, inv_idx_free)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
-    print("size is:")
-    print(size)
-    results = ressy.weight(results_jac, results_cos, min_score, size)
+    results = ressy.weight(results_jac, results_cos, min_score, min_size, max_size)
 
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim

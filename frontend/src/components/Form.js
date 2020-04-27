@@ -13,10 +13,10 @@ class JokeForm extends React.Component {
             isLoaded: false, // indicates if categories have been loaded from API GET request
             cat_options: [],         
 
-            categories: this.props.categories, 
-            search: this.props.search, 
-            score: this.props.score, 
-            size: this.props.size,
+            categories: this.props.categories || [], 
+            search: this.props.search || '', 
+            score: this.props.score || '', 
+            size: this.props.size || '',
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -90,8 +90,7 @@ class JokeForm extends React.Component {
                 checked = {size.toLowerCase() === this.state.size.toLowerCase()} 
             />
             )
-        
-        console.log(this.props.size === "Short")    
+      
         return (
             <Form onSubmit={this.handleSubmit}>
                 <Form.Input

@@ -24,7 +24,7 @@ class JokeForm extends React.Component {
     componentDidMount() {
             axios({
                 method: 'GET',
-                url: `http://localhost:5000/api/cat-options`
+                url: `/api/cat-options`
             })
             .then((response) => {
                 this.setState({

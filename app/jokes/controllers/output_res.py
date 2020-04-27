@@ -21,11 +21,11 @@ def weight(jac_res, cos_res, min_score, min_size, max_size):
         # to discuss - we are making 3 database calls for jaccard categories, this weighting, and metadata. that seems inefficient
         joke_meta = Joke.query.filter_by(id=joke_id).first()
 
-        weighted_similarity = 0.33 * jac_res.get(joke_id, 0)
-        weighted_similarity += 0.33 * cos_res.get(joke_id, 0)
+        weighted_similarity = 0.20 * jac_res.get(joke_id, 0)
+        weighted_similarity += 0.70 * cos_res.get(joke_id, 0)
 
-        weighted_similarity += 0.33 * float(joke_meta.score)/5 if float(
-            joke_meta.score) >= float(min_score) else (0.16/5*float(joke_meta.score))
+        weighted_similarity += 0.20 * float(joke_meta.score)/5 if float(
+            joke_meta.score) >= float(min_score) else (0.10/5*float(joke_meta.score))
 
         if(min_size == -1):
             if joke_meta.size <= 30:

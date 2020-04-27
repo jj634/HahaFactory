@@ -58,7 +58,8 @@ def search():
     min_score = request.args.get('score') or -1
     categories = request.args.getlist('categories')
     req_size = request.args.get('size') or ""
-
+    print("original query ------")
+    print(query)
     size = 1000000
     if req_size == "s":
         size = 10
@@ -71,17 +72,17 @@ def search():
 
     #----------- PARSING -----------#
     # maps lowered text to actual category names
-    # parse_dict = pl.parsing_dict(cat_options)
-    # p_cats = []
-    # tok_typos = None  # currently unused
-    # cat_typos = None  # currently unused
-    # if query:
-    #     # next step: incorporate the thesaurus
-    #     query, p_cats, tok_typos, cat_typos = pl.parse(query, inv_idx,
-    #                                                    cat_options, parse_dict)
-    # else:
-    #     query = []
-    # categories_list = categories + p_cats
+    parse_dict = pl.parsing_dict(cat_options)
+    p_cats = []
+    tok_typos = None  # currently unused
+    cat_typos = None  # currently unused
+    if query:
+        # next step: incorporate the thesaurus
+        query, p_cats, tok_typos, cat_typos = pl.parse(query, inv_idx,
+                                                       cat_options, parse_dict)
+    else:
+        query = []
+    categories_list = categories + p_cats
     categories_list = categories
     categories_list = list(set(categories_list))
 
@@ -115,7 +116,6 @@ def search():
     print(query)
     if query:
         results_cos = cos.fast_cossim(query, inv_idx, inv_idx_free)
-    print(results_cos)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     print("size is:")

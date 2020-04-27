@@ -23,6 +23,9 @@ def fast_cossim(query, inv_idx_terms, inverted_index):
         Output: list of tuples tuple = (joke, sim_score)
     """
     result = {}  # dictionary mapping doc_id to cosine similarity measure
+    assert type(query) is list
+
+    # make sure query is a string list!!
     q_set = set(query)
 
     q_norm = 0  # query norm
@@ -33,7 +36,6 @@ def fast_cossim(query, inv_idx_terms, inverted_index):
         if t_dict['term'] in q_set:
             if 'idf' in t_dict.keys():
                 idf[t_dict['term']] = t_dict['idf']
-    print(idf)
 
     for q_word in q_set:
         if q_word in idf:
@@ -47,9 +49,8 @@ def fast_cossim(query, inv_idx_terms, inverted_index):
 
     q_norm = math.sqrt(q_norm)
     for doc in result:
-        print(doc)
         norm = Joke.query.filter_by(id=doc).first().norm
         result[doc] = result[doc] / (q_norm * float(norm))
 
-    result = sorted(result.items(), key=lambda x: (x[1], x[0]), reverse=True)
+    # result = sorted(result.items(), key=lambda x: (x[1], x[0]), reverse=True)
     return result

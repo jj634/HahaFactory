@@ -17,24 +17,34 @@ def parsing_dict(categories):
 # can write a script to add plurals and ___ jokes but too lazy for now
 diff_dict = {
     'love and romance': 'love & romance',
-    'family and parents': 'family, parents',
+    'family and parent': 'family, parents',
     'pickup line': 'pick-up line',
-    'pickup lines': 'pick-up line',
-    'pick-up lines': 'pick-up line',
     'family': 'family, parents',
-    'parents': 'family, parents',
-    'parents': 'family, parents',
+    'parent': 'family, parents',
     'food': 'food jokes',
     'animal': 'animals',
     'bar': 'bar jokes',
     'blind': 'blind jokes',
-    'blonde': 'blonde jokes',
+    'blonde joke': 'blonde jokes',
     'computer': 'computers',
+    'crazy joke': 'crazy jokes',
+    'dad joke': 'dad jokes',
+    'deep thought': 'deep thoughts',
+    'ethnic joke': 'ethnic jokes',
+    'food': 'food jokes',
     'heaven': 'heaven and hell',
     'hell': 'heaven and hell',
-    'holidays': 'holiday',
+    'holiday': 'holidays',
     'insult': 'insults',
     'love': 'love & romance',
+    'lawyer': 'lawyers',
+    'light bulb': 'light bulbs',
+    'office': 'office jokes',
+    'one liner': 'one liners',
+    'one-liner': 'one liners',
+    'puns': 'pun',
+    'sport': 'sports',
+    'state joke': 'state jokes',
     'romance': 'love & romance',
     'police': 'police jokes'
 }
@@ -66,20 +76,32 @@ def parse(query, inv_idx, cats, parse_dict):
 
     input_cats = []
     # first parse out categories
-    for c in cats:
-        if c in query:
-            input_cats.append(c)
-            start = query.index(c)
-            end = len(c)
-            query = query[:start] + ' ' + query[start + end:]
+    tmp = query
     # check for possible variations of category names
     for var in diff_dict:
-        if var in query:
-            input_cats.append(diff_dict[var])
-            start = query.index(var)
-            end = len(var)
-            query = query[:start] + ' ' + query[start + end:]
-
+        if var in tmp:
+            while var in tmp:
+                start = tmp.index(var)
+                end = len(var) + start
+                real_start = (
+                    start <= 0) or tmp[start-1] == ' ' or tmp[start-1] == ','
+                real_end = (end >= len(tmp)) or (
+                    tmp[end] == ' ') or (tmp[end] == ',') or (tmp[end] == 's')
+                tmp = tmp[:start] + tmp[end:]
+                if real_start and real_end:
+                    input_cats.append(diff_dict[var])
+    for c in cats:
+        if c in tmp:
+            while c in tmp:
+                start = tmp.index(c)
+                end = len(c) + start
+                real_start = (
+                    start <= 0) or tmp[start-1] == ' ' or tmp[start-1] == ','
+                real_end = end >= len(tmp) or (
+                    tmp[end] == ' ' or tmp[end] == ',')
+                tmp = tmp[:start] + tmp[end:]
+                if real_start and real_end:
+                    input_cats.append(c)
     # list of categories for Jaccard
     input_cats = [parse_dict[c] for c in input_cats]
 

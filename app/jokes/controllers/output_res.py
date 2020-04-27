@@ -23,8 +23,8 @@ def weight(jac_res, cos_res, min_score, max_size):
 
         weighted_similarity = 0.33 * jac_res.get(joke_id, 0)
         weighted_similarity += 0.33 * cos_res.get(joke_id, 0)
-        weighted_similarity += 0.33 * joke_meta.score/5 if float(
-            joke_meta.score) >= float(min_score) else (0.16/5*joke_meta.score)
+        weighted_similarity += 0.33 * float(joke_meta.score)/5 if float(
+            joke_meta.score) >= float(min_score) else (0.16/5*float(joke_meta.score))
 
         if int(joke_meta.size) <= max_size:
             results.append({

@@ -123,7 +123,7 @@ def search():
         results_cos = cos.fast_cossim(query, inv_idx, inv_idx_free)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
-    results = ressy.weight(results_jac, results_cos, min_score, min_size, max_size)
+    results = ressy.weight(results_jac, results_cos, min_score)
 
     #--------------------- SCORING ------------------------------------#
     # Temporary: If there are no results from running jaccard + cosine, and a minimum score is provided, results normal min score filtered

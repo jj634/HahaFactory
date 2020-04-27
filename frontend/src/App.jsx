@@ -45,6 +45,7 @@ class App extends React.Component {
     axios({
       method: 'GET',
       url: `/api/search`,
+      // url: `http://localhost:5000/api/search`,
       params: URLParams
     })
       .then((response) => {
@@ -99,7 +100,8 @@ class App extends React.Component {
         </Row>
         <Row>
           <Col className="jokes-col">
-             <JokeResults jokes={this.state.jokes}/>
+             {/* {this.state.jokes != null ? <JokeResults jokes={this.state.jokes}/> : null} */}
+             <JokeResults jokes={this.state.jokes}/> 
           </Col>
         </Row>
       </Container >

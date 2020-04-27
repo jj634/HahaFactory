@@ -126,8 +126,8 @@ def search():
     results = ressy.weight(results_jac, results_cos, min_score, min_size, max_size)
 
     #--------------------- SCORING ------------------------------------#
-    # Temporary fix: If there are no results from running jaccard + cosine, and a minimum score is provided, append min score filtered results.
-    if not results and min_score: 
+    # Temporary: If there are no results from running jaccard + cosine, and a minimum score is provided, results normal min score filtered
+    if not results and min_score != -1: 
         jokes = Joke.query.filter(Joke.score >= min_score).all()
         nonrelated_jokes = [{
             "text": joke.text,
@@ -138,6 +138,23 @@ def search():
             "similarity": str(0.16/5*float(joke.score))
         } for joke in jokes]
         results += nonrelated_jokes
+
+    #--------------------- LENGTH ------------------------------------#
+    # At end, results is filtered based on length.
+    if req_size:
+        if results: 
+            results = ressy.size_filter(results, min_size, max_size)
+        else: 
+            jokes = Joke.query.all()
+            results = [{
+                "text": joke.text,
+                "categories": joke.categories,
+                "score": str(joke.score),
+                "maturity": joke.maturity,
+                "size": str(joke.size),
+                "similarity": str(1.0)
+            } for joke in jokes]
+            results = ressy.size_filter(results, min_size, max_size)
 
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim

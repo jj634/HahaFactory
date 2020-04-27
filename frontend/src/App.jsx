@@ -13,9 +13,8 @@ import logo from './images/operator.png';
 import Form from './components/Form'
 import JokeResults from './components/JokeResults';
 
-// import { Button, Checkbox, Form } from 'semantic-ui-react'
-import { Row, Col, Container } from 'react-bootstrap'
-import { Dimmer, Loader} from 'semantic-ui-react'
+import { Row, Col } from 'react-bootstrap'
+import { Dimmer, Loader, Container} from 'semantic-ui-react'
 
 class App extends React.Component {
   constructor(props) {
@@ -26,7 +25,8 @@ class App extends React.Component {
 
       categories: [],
       score: '',
-      search: ''    
+      search: '', 
+      length: ''    
     }
   }
 
@@ -40,6 +40,7 @@ class App extends React.Component {
     const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
+    const length_param = URLParams.get("length")
 
     axios({
       method: 'GET',
@@ -53,7 +54,8 @@ class App extends React.Component {
 
           categories: category_param,
           score: score_param,
-          search: search_param
+          search: search_param, 
+          length: length_param
         })
       })
       .catch(err =>
@@ -67,9 +69,10 @@ class App extends React.Component {
     const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
+    const length_param = URLParams.get("length")
 
     const cat_updated = category_param.sort().toString() !== (prevState.categories).sort().toString()
-    return cat_updated || score_param !== prevState.score || search_param !== prevState.search 
+    return cat_updated || score_param !== prevState.score || search_param !== prevState.search || length_param !== prevState.length
       ? { isLoaded: false }
       : null
   }
@@ -90,7 +93,7 @@ class App extends React.Component {
               <img src={logo} className="App-logo" alt="logo" />
             </header>
 
-          <Form score = {this.state.score} categories = {this.state.categories} search = {this.state.search} />
+          <Form score = {this.state.score} categories = {this.state.categories} search = {this.state.search} length = {this.state.length}/>
 
           </Col>
         </Row>
@@ -104,7 +107,7 @@ class App extends React.Component {
    }
    else return (
       <Dimmer active inverted>
-        <Loader>Loading</Loader>
+        <Loader size="large" >Loading</Loader>
       </Dimmer>
       )
    }

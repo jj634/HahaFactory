@@ -81,7 +81,7 @@ class JokeForm extends React.Component {
             })
         );
 
-        const sizesList = size.map ((size) => 
+        const sizesList = sizes.map ((size) => 
             (
                 < Form.Radio
                                     name = "size"

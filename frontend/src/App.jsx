@@ -26,7 +26,7 @@ class App extends React.Component {
       categories: [],
       score: '',
       search: '', 
-      length: ''    
+      size: ''    
     }
   }
 

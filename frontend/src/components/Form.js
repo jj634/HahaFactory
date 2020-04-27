@@ -4,20 +4,19 @@ import { withRouter } from 'react-router-dom'
 
 import { Button, Form } from 'semantic-ui-react'
 import scores from '../images/scores';
+import length from '../images/length';
 
 class JokeForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isLoaded: false,
+            isLoaded: false, // indicates if categories have been loaded from API GET request
             cat_options: [],         
 
             categories: this.props.categories, 
             search: this.props.search, 
             score: this.props.score, 
-            
-            clickSubmit: false, 
-            query: ''
+            length: this.props.length, 
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -45,20 +44,20 @@ class JokeForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const { search, categories, score } = this.state
+        const { search, categories, score, length } = this.state
 
         const params = new URLSearchParams()
         if (this.state.search != null) params.append("search", search)
 
-        if (this.state.categories != []) {
+        if (this.state.categories !== null) {
         categories.forEach(cat => {
-            params.append("category", cat);
+            params.append("categories", cat);
         })
         }
 
         if (this.state.score != null) params.append("score", score)
+        if (this.state.length != null) params.append("length", length)
 
-        console.log(params.toString())
         const url = '?'+params.toString()
         this.props.history.push({
             pathname: '/',
@@ -82,6 +81,17 @@ class JokeForm extends React.Component {
                 value: score
             })
         );
+
+        const lengthList = length.map ((length) => 
+            (
+                < Form.Radio
+                                    name = "length"
+                                    label={length}
+                                    defaultValue = {this.propslength}
+                                    checked = { length === this.props.length}
+                                    onChange = { this.handleChange }
+        />
+            ))
         return (
                         <Form onSubmit={this.handleSubmit}>
                             <Form.Input
@@ -115,6 +125,11 @@ class JokeForm extends React.Component {
                                 onChange={this.handleChange}
                                 defaultValue = {this.props.score}
                             />
+
+                            <Form.Group inline>
+                                <label>Size</label>
+                                {lengthList}
+                            </Form.Group>
 
                             <Button class="ui button" type="submit">Go</Button>
                         </Form>

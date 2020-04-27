@@ -1,4 +1,4 @@
-# Reads final.json
+# Reads final_score.json
 # For each joke, generates tokens and adds the token list to each joke object, with atribute "toks"
 # Write to final_toks.json 
 

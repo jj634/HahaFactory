@@ -1,3 +1,9 @@
+# Order of writing files: 
+# 1. final.json --> final_score.json (w/ scoring ML files)
+# 2. final_score.json --> final_toks.json (w/ tokenizer.py)
+# 3. final_toks.json --> final_norm.json (w/ this file) 
+# 4. final_norm.json --> final_sizes.json (this file)
+
 import numpy as np
 from numpy import linalg as LA
 import json

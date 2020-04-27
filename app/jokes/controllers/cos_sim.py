@@ -13,7 +13,8 @@ def fast_cossim(query, inv_idx_terms, inverted_index):
         Search the collection of documents for the given query
         Inputs: 
             query: list of tokens
-            inverted_index: dictionary that matches token to a list of joke_ids
+            inv_idx_terms: dictionary mapping token to list of tuples where tuple = (joke_id, tfs)
+            inverted_index: list of dictionaries for each token where dictionary maps
                 - term
                 - list of joke_ids
                 - list of tfs
@@ -27,10 +28,12 @@ def fast_cossim(query, inv_idx_terms, inverted_index):
     q_norm = 0  # query norm
     # dictionary mapping term to list of tuple(joke_id, tf)
     idf = {}  # dictionary mapping term to idf
+
     for t_dict in inverted_index:
         if t_dict['term'] in q_set:
             if 'idf' in t_dict.keys():
                 idf[t_dict['term']] = t_dict['idf']
+    print(idf)
 
     for q_word in q_set:
         if q_word in idf:
@@ -44,8 +47,9 @@ def fast_cossim(query, inv_idx_terms, inverted_index):
 
     q_norm = math.sqrt(q_norm)
     for doc in result:
+        print(doc)
         norm = Joke.query.filter_by(id=doc).first().norm
         result[doc] = result[doc] / (q_norm * float(norm))
 
-    # result = sorted(result.items(), key=lambda x: (x[1], x[0]), reverse=True)
+    result = sorted(result.items(), key=lambda x: (x[1], x[0]), reverse=True)
     return result

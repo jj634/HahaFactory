@@ -19,9 +19,9 @@ const JokeResults = ({ jokes }) => {
         <div>
         <div className="card">
           <div className="card-body">
-            <h5 className="card-title">{joke[0].text}</h5>
-            <h6 className="card-subtitle mb-2 text-muted">{joke[0].score}</h6>
-              {joke[0].categories.map((cat) => <Label>
+            <h5 className="card-title">{joke.text}</h5>
+            <h6 className="card-subtitle mb-2 text-muted">{joke.score}</h6>
+              {joke.categories.map((cat) => <Label>
                 {cat}
               </Label>)}
           </div>

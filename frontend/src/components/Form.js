@@ -87,7 +87,7 @@ class JokeForm extends React.Component {
                                     name = "size"
                                     label={size}
                                     defaultValue = {this.props.size}
-                                    checked = { size === this.props.size}
+                                    checked = { size === this.state.size}
                                     onChange = { this.handleChange }
         />
             ))

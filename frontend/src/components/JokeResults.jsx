@@ -7,7 +7,6 @@ const JokeResults = ({ jokes }) => {
   if (jokes.length == 0) {
     return (
       <React.Fragment>
-
       </React.Fragment>
     )
   }
@@ -15,7 +14,7 @@ const JokeResults = ({ jokes }) => {
     <React.Fragment>
       <center><h2>Jokes</h2></center>
       {jokes.map((joke, index) => (
-        (index <= 10) ?
+        (index <= 20) ?
         <div>
         <div className="card">
           <div className="card-body">

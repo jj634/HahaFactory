@@ -22,12 +22,12 @@ def add_tokens(tokenizer, data):
     result = data
 
     for i in range(len(result)):
-        result[i]['toks'] = tokenizer.tokenize(result[i]['joke'].lower())
+        result[i]['toks'] = tokenizer.tokenize(result[i]['text'].lower())
 
     return result
 
 def update_json():
-    with open("final_score.json") as f:
+    with open("final_sizes_nodups.json") as f:
         data = json.load(f)
 
     num_jokes = len(data)

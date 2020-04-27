@@ -145,46 +145,46 @@ with open('inv_idx_cat.json', 'w') as f:
 #
 # cat_num = compute_cat_num(data)
 
-def compute_doc_norms(inv_idx, idf_dict, n_docs):
-    """ Precompute the euclidean norm of each document.
+# def compute_doc_norms(inv_idx, idf_dict, n_docs):
+#     """ Precompute the euclidean norm of each document.
     
-    Returns:
-        norms: array of size n_docs where norms[i] = the norm of joke i
+#     Returns:
+#         norms: array of size n_docs where norms[i] = the norm of joke i
     
-    Inputs:
-        index: inverted index
-        idf: dictionary mapping term to precomputed idf values
-        n_docs: the total number of jokes
-    """
-    result = np.zeros(n_docs)
+#     Inputs:
+#         index: inverted index
+#         idf: dictionary mapping term to precomputed idf values
+#         n_docs: the total number of jokes
+#     """
+#     result = np.zeros(n_docs)
 
-    for word in inv_idx:
-        if word in idf_dict:
-            curr_idf = idf_dict[word]
-            for t in inv_idx[word]:
-                doc = t[0]-1
-                tf = t[1]
-                result[doc] += math.pow(tf*curr_idf, 2)
-    result = np.sqrt(result)
-    return result
+#     for word in inv_idx:
+#         if word in idf_dict:
+#             curr_idf = idf_dict[word]
+#             for t in inv_idx[word]:
+#                 doc = t[0]-1
+#                 tf = t[1]
+#                 result[doc] += math.pow(tf*curr_idf, 2)
+#     result = np.sqrt(result)
+#     return result
 
-doc_norms_lst = compute_doc_norms(inv_idx, idf_dict, NUM_JOKES)
+# doc_norms_lst = compute_doc_norms(inv_idx, idf_dict, NUM_JOKES)
 
-def add_norms(jokes, norms):
-    """ 
-    Adds norms to corresponding jokes.
-    """
-    result = [] 
-    for i in range(len(jokes)):
-        temp = {}
-        temp['text'] = jokes[i]['joke']
-        temp['categories'] = jokes[i]['categories']
-        temp['score'] = jokes[i]['score']
-        temp['norm'] = norms[i]
-        result.append(temp)
-    return result
+# def add_norms(jokes, norms):
+#     """ 
+#     Adds norms to corresponding jokes.
+#     """
+#     result = [] 
+#     for i in range(len(jokes)):
+#         temp = {}
+#         temp['text'] = jokes[i]['joke']
+#         temp['categories'] = jokes[i]['categories']
+#         temp['score'] = jokes[i]['score']
+#         temp['norm'] = norms[i]
+#         result.append(temp)
+#     return result
    
-new_final = add_norms(data, doc_norms_lst)
+# new_final = add_norms(data, doc_norms_lst)
 
 # with open('final_norm.json', 'w') as f:
 #     json.dump(new_final, f, indent=4)

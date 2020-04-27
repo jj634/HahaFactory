@@ -49,6 +49,7 @@ def fast_cossim(query, inv_idx_terms, inverted_index):
 
     q_norm = math.sqrt(q_norm)
     for doc in result:
+        print(doc)
         norm = Joke.query.filter_by(id=doc).first().norm
         result[doc] = result[doc] / (q_norm * float(norm))
 

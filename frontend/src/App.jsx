@@ -28,7 +28,8 @@ class App extends React.Component {
       categories: [],
       score: '',
       search: '', 
-      size: '',    
+      sizes: [],    
+      maturity: ''
     }
   }
 
@@ -42,7 +43,8 @@ class App extends React.Component {
     const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
-    const size_param = URLParams.get("size")
+    const size_param = URLParams.getAll("sizes")
+    const maturity_param = URLParams.get("maturity")
 
     axios({
       method: 'GET',
@@ -60,7 +62,8 @@ class App extends React.Component {
           categories: category_param,
           score: score_param,
           search: search_param, 
-          size: size_param
+          sizes: size_param,
+          maturity: maturity_param
         })
       })
       .catch(err =>
@@ -74,10 +77,12 @@ class App extends React.Component {
     const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
-    const size_param = URLParams.get("size")
+    const size_param = URLParams.getAll("sizes")
+    const maturity_param = URLParams.get("maturity")
 
     const cat_updated = category_param.sort().toString() !== (prevState.categories).sort().toString()
-    return cat_updated || score_param !== prevState.score || search_param !== prevState.search || size_param !== prevState.size
+    const size_updated = size_param.sort().toString() !== (prevState.sizes).sort().toString()
+    return cat_updated || score_param !== prevState.score || search_param !== prevState.search || size_updated || maturity_param !== prevState.maturity
       ? { isLoaded: false }
       : null
   }
@@ -99,7 +104,7 @@ class App extends React.Component {
               <img src={logo} className="App-logo" alt="logo" />
             </header>
 
-          <Form score = {this.state.score} categories = {this.state.categories} search = {this.state.search} size = {this.state.size}/>
+          <Form score = {this.state.score} categories = {this.state.categories} search = {this.state.search} sizes = {this.state.sizes} maturity = {this.state.maturity}/>
 
           </Col>
         </Row>

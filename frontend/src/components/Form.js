@@ -18,7 +18,8 @@ class JokeForm extends React.Component {
             categories: this.props.categories || [], 
             search: this.props.search || '', 
             score: this.props.score || '', 
-            size: this.props.size || '',
+            sizes: this.props.sizes || [],
+            maturity: this.props.maturity
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         // this.createDropDownList = this.createDropDownList(this);
@@ -47,19 +48,25 @@ class JokeForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const { search, categories, score, size } = this.state
+        const { search, categories, score, sizes, maturity } = this.state
 
         const params = new URLSearchParams()
         if (this.state.search != null) params.append("search", search)
 
         if (this.state.categories !== null) {
-        categories.forEach(cat => {
-            params.append("categories", cat);
-        })
+            categories.forEach(cat => {
+                params.append("categories", cat);
+            })
         }
 
         if (this.state.score != null) params.append("score", score)
-        if (this.state.size != null) params.append("size", size)
+        if (this.state.maturity != null) params.append("maturity", maturity)
+
+        if (this.state.sizes !== null) {
+            sizes.forEach(size => {
+                params.append("sizes", size);
+                })
+        }
 
         const url = '?'+params.toString()
         this.props.history.push({
@@ -135,20 +142,20 @@ class JokeForm extends React.Component {
                         selection
                         clearable
                         options={maturityList}
-                        // onChange={this.handleChange}
-                        // defaultValue = {this.props.score}
+                        onChange={this.handleChange}
+                        defaultValue = {this.props.maturity}
                     />
 
                     <Form.Dropdown
                         placeholder = "Select Joke Length"
-                        name = "size"
+                        name = "sizes"
                         label = "Joke Length"
                         selection
                         clearable
                         multiple
                         options = {sizeList}
                         onChange = {this.handleChange}
-                        defaultValue = {this.props.size}
+                        defaultValue = {this.props.sizes}
                     />
                 </Form.Group>
 

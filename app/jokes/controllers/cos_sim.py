@@ -1,4 +1,3 @@
-from nltk.tokenize import TreebankWordTokenizer
 from . import *
 import math
 

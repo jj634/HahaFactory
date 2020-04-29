@@ -22,11 +22,13 @@ class App extends React.Component {
     this.state = {
       isLoaded: false,
       jokes: [],
+      typo: false, 
+      typo_query: '',
 
       categories: [],
       score: '',
       search: '', 
-      size: ''    
+      size: '',    
     }
   }
 
@@ -52,6 +54,8 @@ class App extends React.Component {
         this.setState({
           isLoaded: true,
           jokes: response.data.jokes,
+          typo: response.data.typo, 
+          typo_query: response.data.typo_query,
 
           categories: category_param,
           score: score_param,
@@ -101,7 +105,12 @@ class App extends React.Component {
         </Row>
         <Row>
           <Col className="jokes-col">
-             {/* {this.state.jokes != null ? <JokeResults jokes={this.state.jokes}/> : null} */}
+             {this.state.typo & this.state.typo !='' 
+               ? <div> 
+                <h4> We could not find any results for <b>"{this.state.search}"</b>. Did you mean... <b>"{this.state.typo_query}"</b>? </h4>
+                <h4> We are showing results for <b>"{this.state.typo_query}"</b>.</h4>
+                </div>
+               : null}
              <JokeResults jokes={this.state.jokes}/> 
           </Col>
         </Row>

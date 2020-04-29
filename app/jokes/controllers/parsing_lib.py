@@ -109,11 +109,13 @@ def parse(query, inv_idx, cats, parse_dict):
     toks = tokenizer.tokenize(query)
     new_toks = []
     typos = []
+    index_typos = []
 
     # check if the tokens are valid (in the inv_idx), otherwise classified as typo
-    for t in toks:
+    for index, t in enumerate(toks):
         if t not in inv_idx:
             typos.append(t)
+            index_typos.append(index)
         else:
             new_toks.append(t)
 
@@ -125,4 +127,4 @@ def parse(query, inv_idx, cats, parse_dict):
             closest_toks[t] = tl.closest_word(t, inv_idx)
             closest_cats[t] = tl.closest_word(t, cats)
 
-    return new_toks, input_cats, list(closest_toks.items()), list(closest_cats.items())
+    return new_toks, input_cats, list(closest_toks.items()), list(closest_cats.items()), index_typos

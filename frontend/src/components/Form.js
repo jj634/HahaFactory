@@ -6,6 +6,7 @@ import { Form } from 'semantic-ui-react'
 import { Slider } from "react-semantic-ui-range";
 import scores from '../images/scores';
 import sizes from '../images/size';
+import maturities from '../images/maturity'
 
 class JokeForm extends React.Component {
     constructor(props) {
@@ -81,6 +82,7 @@ class JokeForm extends React.Component {
         const categoryList = this.createDropDownList(this.state.cat_options)
         const scoreList = this.createDropDownList(scores)
         const sizeList = this.createDropDownList(sizes)
+        const maturityList = this.createDropDownList(maturities)
 
         const slider_settings = {
             start: 3,
@@ -127,14 +129,14 @@ class JokeForm extends React.Component {
                         <Slider discrete value={this.props.score} color="white" settings={slider_settings} />
                     </Form.Field>
                     <Form.Dropdown
-                        placeholder="Select Minimum Score"
-                        name="score"
-                        label="Minimum Score"
+                        placeholder="Select Maturity"
+                        name="maturity"
+                        label="Maturity Rating"
                         selection
                         clearable
-                        options={scoreList}
-                        onChange={this.handleChange}
-                        defaultValue = {this.props.score}
+                        options={maturityList}
+                        // onChange={this.handleChange}
+                        // defaultValue = {this.props.score}
                     />
 
                     <Form.Dropdown
@@ -143,7 +145,9 @@ class JokeForm extends React.Component {
                         label = "Joke Length"
                         selection
                         clearable
+                        multiple
                         options = {sizeList}
+                        onChange = {this.handleChange}
                         defaultValue = {this.props.size}
                     />
                 </Form.Group>

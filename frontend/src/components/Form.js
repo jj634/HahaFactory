@@ -2,7 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom'
 
-import { Form, Container } from 'semantic-ui-react'
+import { Form } from 'semantic-ui-react'
+import { Slider } from "react-semantic-ui-range";
 import scores from '../images/scores';
 import sizes from '../images/size';
 
@@ -19,6 +20,7 @@ class JokeForm extends React.Component {
             size: this.props.size || '',
         }
         this.handleSubmit = this.handleSubmit.bind(this);
+        // this.createDropDownList = this.createDropDownList(this);
     }
 
     componentDidMount() {
@@ -65,35 +67,37 @@ class JokeForm extends React.Component {
         })
     }
 
+    createDropDownList = (list) => {
+        return list.map((element) =>
+            ({
+                key: element,
+                text: element,
+                value: element
+            })
+        )
+    }
+
     render() {
-        const categoryList = this.state.cat_options.map((cat) =>
-            ({
-                key: cat,
-                text: cat,
-                value: cat
-            })
-        );
+        const categoryList = this.createDropDownList(this.state.cat_options)
+        const scoreList = this.createDropDownList(scores)
+        const sizeList = this.createDropDownList(sizes)
 
-        const scoreList = scores.map((score) =>
-            ({
-                key: score,
-                text: score,
-                value: score
-            })
-        );
-
-        const sizeList = sizes.map((size) => 
-            ({
-                key: size,
-                text: size,
-                value: size
-            })
-        );
+        const slider_settings = {
+            start: 3,
+            min: 1,
+            max: 5,
+            step: 1,
+            onChange: value => {
+                this.setState({
+                    score: value
+                })
+            }
+        };
       
         return (
             <Form onSubmit={this.handleSubmit} size = "large" key = "large">
                 <Form.Input
-                    placeholder="Search"
+                    placeholder="Enter your search"
                     name="search"
                     label="Keywords"
                     type="text"
@@ -116,7 +120,12 @@ class JokeForm extends React.Component {
                     clearable
                 />
 
+                
                 <Form.Group widths='equal'>
+                    <Form.Field>
+                        <p><b>Relevancy       vs.      Funny Factor</b></p>
+                        <Slider discrete value={this.props.score} color="white" settings={slider_settings} />
+                    </Form.Field>
                     <Form.Dropdown
                         placeholder="Select Minimum Score"
                         name="score"

@@ -125,4 +125,4 @@ def parse(query, inv_idx, cats, parse_dict):
             closest_toks[t] = tl.closest_word(t, inv_idx)
             closest_cats[t] = tl.closest_word(t, cats)
 
-    return new_toks, input_cats, closest_toks.items(), closest_cats.items()
+    return new_toks, input_cats, list(closest_toks.items()), list(closest_cats.items())

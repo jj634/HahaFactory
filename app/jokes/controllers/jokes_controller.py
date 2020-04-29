@@ -48,6 +48,8 @@ def search():
     min_score = request.args.get('score') or -1
     categories = request.args.getlist('categories')
     req_size = request.args.get('size') or ""
+    typo = False
+    typo_query = []
 
     print("original query ------")
     print(query)
@@ -71,8 +73,8 @@ def search():
     # maps lowered text to actual category names
     parse_dict = pl.parsing_dict(cat_options)
     p_cats = []
-    tok_typos = None  # currently unused
-    cat_typos = None  # currently unused
+    tok_typos = []  # currently unused
+    cat_typos = []  # currently unused
     if query:
         # next step: incorporate the thesaurus
         query, p_cats, tok_typos, cat_typos = pl.parse(query, inv_idx,
@@ -81,6 +83,26 @@ def search():
         query = []
     categories_list = categories + p_cats
     categories_list = list(set(categories_list))
+
+    # Only checks typos currently if nothing in query matches tokens in inverted_index
+    if(categories_list == [] and query == []):
+        typo = True
+        for index in range(len(cat_typos)): 
+            cat_suggestion = cat_typos[index][1]
+            free_suggestion= tok_typos[index][1]
+
+            if cat_suggestion[1] < free_suggestion[1]: 
+                categories_list.append(cat_suggestion[0])
+                term = cat_suggest_tuple[0]
+            else: 
+                query.append(free_suggestion[0])
+                term = free_suggestion[0]
+            typo_query.append(term)
+
+        if query:
+            query_string = " ".join(query)
+            query, _, _, _ = pl.parse(query_string, inv_idx,
+                                                       cat_options, parse_dict)
 
     #--------------------- JACCARD ---------------------#
     # dictionary key = joke_id, value = (joke_dict, jac_sim)
@@ -152,7 +174,9 @@ def search():
     results = sorted(results, key=lambda x: (x["similarity"]), reverse=True)
     cat_options = sorted(cat_options)
 
-    return {"jokes": results}
+    typo_string = " ".join(typo_query)
+    print(typo_string)
+    return {"jokes": results, "typo": typo, "typo_query" : typo_string}
 
 
 @jokes.route('/cat-options', methods=['GET'])

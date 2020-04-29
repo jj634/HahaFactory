@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom'
 
-import { Button, Form, Radio } from 'semantic-ui-react'
+import { Form, Container } from 'semantic-ui-react'
 import scores from '../images/scores';
 import sizes from '../images/size';
 
@@ -24,7 +24,8 @@ class JokeForm extends React.Component {
     componentDidMount() {
             axios({
                 method: 'GET',
-                url: `/api/cat-options`
+                // url: `/api/cat-options`,
+                url: `http://localhost:5000/api/cat-options`,
             })
             .then((response) => {
                 this.setState({
@@ -81,18 +82,16 @@ class JokeForm extends React.Component {
             })
         );
 
-        const sizesList = sizes.map ((size) => 
-            <Form.Radio
-                label = {size}
-                name = "size"
-                value = {size}
-                onChange = {this.handleChange}
-                checked = {size.toLowerCase() === this.state.size.toLowerCase()} 
-            />
-            )
+        const sizeList = sizes.map((size) => 
+            ({
+                key: size,
+                text: size,
+                value: size
+            })
+        );
       
         return (
-            <Form onSubmit={this.handleSubmit}>
+            <Form onSubmit={this.handleSubmit} size = "large" key = "large">
                 <Form.Input
                     placeholder="Search"
                     name="search"
@@ -100,6 +99,7 @@ class JokeForm extends React.Component {
                     type="text"
                     onChange={this.handleChange}
                     defaultValue={this.props.search} 
+                    clearable
                 />
 
                 <Form.Dropdown
@@ -113,24 +113,36 @@ class JokeForm extends React.Component {
                     options={categoryList}
                     onChange={this.handleChange}
                     defaultValue = {this.props.categories}
+                    clearable
                 />
 
-                <Form.Dropdown
-                    placeholder="Select Minimum Score"
-                    name="score"
-                    label="Minimum Score"
-                    selection
-                    options={scoreList}
-                    onChange={this.handleChange}
-                    defaultValue = {this.props.score}
-                />
+                <Form.Group widths='equal'>
+                    <Form.Dropdown
+                        placeholder="Select Minimum Score"
+                        name="score"
+                        label="Minimum Score"
+                        selection
+                        clearable
+                        options={scoreList}
+                        onChange={this.handleChange}
+                        defaultValue = {this.props.score}
+                    />
 
-                <Form.Group inline>
-                    <label>Length of Joke</label>
-                    {sizesList}
+                    <Form.Dropdown
+                        placeholder = "Select Joke Length"
+                        name = "size"
+                        label = "Joke Length"
+                        selection
+                        clearable
+                        options = {sizeList}
+                        defaultValue = {this.props.size}
+                    />
                 </Form.Group>
 
-                <Button class="ui button" type="submit">Go</Button>
+                <Form.Group inline>
+                    <Form.Button inline center secondary type="submit" size="large">Find Jokes</Form.Button>
+                    <Form.Button center primary type="submit" size="large">I'm Feeling Funny!</Form.Button>
+                </Form.Group>
             </Form>
         )
     }

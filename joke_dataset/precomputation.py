@@ -52,6 +52,7 @@ def build_inverted_indices(jokes):
     return result, result_cat
 
 inv_idx, inv_idx_cat = build_inverted_indices(data)
+print(inv_idx)
 
 def compute_idf(inv_idx, n_docs, min_df = 0, max_df_ratio=0.35):
     """ 
@@ -133,8 +134,12 @@ def edit_cats(inv_idex_cat):
 
 new_inv_idx_cat = edit_cats(inv_idx_cat)
         
+with open('inv_idx_free_2.json', 'w') as f:
+    json.dump(inv_idx, f, indent=4)
+
 with open('inv_idx_free.json', 'w') as f:
     json.dump(new_inv_idx, f, indent=4)
+
 with open('inv_idx_cat.json', 'w') as f:
     json.dump(new_inv_idx_cat, f, indent=4)
 

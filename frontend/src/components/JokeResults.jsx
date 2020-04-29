@@ -18,7 +18,7 @@ const JokeResults = ({ jokes }) => {
         <div>
         <div className="card">
           <div className="card-body">
-            <h5 className="card-title">{joke.text}</h5>
+            {joke.text.split('\n').map ((item, i) => <h5 key={i}>{item}</h5>)}
             <h6 className="card-subtitle mb-2 text-muted">{joke.score}</h6>
               {joke.categories.map((cat) => <Label>
                 {cat}

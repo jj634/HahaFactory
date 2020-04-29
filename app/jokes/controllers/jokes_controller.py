@@ -4,15 +4,6 @@ from . import cos_sim as cos
 from . import cat_jaccard as jac
 from . import output_res as ressy
 from . import *
-"""
-{
-  "text": "hi",
-  "categories": [1,2,3],
-  "score": 2,
-  "maturity": 2
-} 
-"""
-
 
 @jokes.route('/jokes', methods=['GET', 'POST'])
 def handle_jokes():
@@ -43,11 +34,11 @@ def handle_jokes():
         return {"count": len(results), "jokes": results}
 
 
-with open('./inv_idx_free.json') as f:
-    inv_idx_free = json.load(f)
+with open('./inv_idx_free_2.json') as f:
+    inv_idx = json.load(f)
 
-inv_idx = cos.inv_idx_trad(inv_idx_free)
-
+with open('./idf_dict.json') as f:
+    idf_dict = json.load(f)
 
 @jokes.route('/search', methods=['GET'])
 def search():
@@ -120,7 +111,7 @@ def search():
     print("QUERY IS: ---------")
     print(query)
     if query:
-        results_cos = cos.fast_cossim(query, inv_idx, inv_idx_free)
+        results_cos = cos.fast_cossim(query, inv_idx, idf_dict)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     results = ressy.weight(results_jac, results_cos, min_score)

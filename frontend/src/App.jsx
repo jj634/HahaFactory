@@ -44,8 +44,8 @@ class App extends React.Component {
 
     axios({
       method: 'GET',
-      url: `/api/search`,
-      // url: `http://localhost:5000/api/search`,
+      // url: `/api/search`,
+      url: `http://localhost:5000/api/search`,
       params: URLParams
     })
       .then((response) => {
@@ -90,7 +90,8 @@ class App extends React.Component {
         <Row className="justify-content-md-center">
           <Col>
             <header className="App-header">
-              <h1>HahaFactory</h1>
+              <h1>HahaFactory:</h1>
+              <h2>Finding Hilarious Jokes for You</h2>
               <img src={logo} className="App-logo" alt="logo" />
             </header>
 

@@ -5,7 +5,7 @@ body{
   background-image: linear-gradient(to right, #F69B41 , #E26061);
   width:100%;
   height:100%;
-  padding-top: 15vh;
+  padding: 5vh;
 }
 
 h1{
@@ -28,6 +28,14 @@ h1{
                0 10px 10px rgba(0,0,0,.2),
                0 20px 20px rgba(0,0,0,.15);
 }
+
+/* h1{
+  font-weight: 600;
+  font-size: 80px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  color: black;
+  margin: 0
+} */
 
 .App-header {
   display: flex;
@@ -57,6 +65,8 @@ h1{
 
 img{
   width: 300px;
+  /* width: 250px; */
+  margin: 10px
 }
 
 .form-label{

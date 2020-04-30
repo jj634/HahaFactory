@@ -1,9 +1,6 @@
 import json
 import nltk
 
-# please don't run ----- it takes forever because it doesn't use a tfidf matrix rn loool 
-# duplicate jokes identified are in sim_jokes.json, they have been deleted
-
 ###### ORIGINAL CODE FOR REMOVING EXACT DUPLICATES -- JACCARD SIMILARITY SHOULD REMOVE THEM #####
 # joke_list = {}
 # final = []
@@ -32,80 +29,98 @@ import nltk
 # with open ('./final_sizes_nodups.json', "w") as f:
 #     json.dump(final, f, indent = 4)
 
-# from nltk.tokenize import TreebankWordTokenizer
 
-# tokenizer = TreebankWordTokenizer()
 
-# with open ('./final_sizes_nodups.json') as f:
-#     data = json.load(f)
-# f.close()
 
-# #indexes/joke_ids of jokes with length < 50; assumption that longer jokes won't have similar jokes
-# short_jokes = [idx for idx, joke in enumerate(data) if joke['size'] < 50] 
-# sim_jokes = []
-# deletejokes_indexes = []
 
-# for i in range(0, len(short_jokes)):
-#     joke = data[i]['text']
-#     tokens_1 = set(tokenizer.tokenize(joke))
 
-#     for j in range (i+1, len(short_jokes)):
-#         joke_2 = data[j]['text']
-#         tokens_2 = set(tokenizer.tokenize(joke_2))
 
-#         jd_sent_1_2 = nltk.jaccard_distance(tokens_1, tokens_2)
 
-#         if(jd_sent_1_2 < 0.4): 
-#             # note: "If you were a ..., you'd be a ...." jokes need a smaller threshold
-#             if ("if you were a " in joke.lower() and jd_sent_1_2 > 0.30):
-#                 continue
-#             new_score = (data[i]['score'] + data[j]['score']) /2 
-#             new_categories = list(set(data[i]['categories'] + data[j]['categories']))
+# LOOOL pls don't look at this code; its atrocious, slow and awful. do not run. it does not use tfidfvectorizer. 
+# if you want to try to remove similar jokes, i would recommend rewriting using sklearn lol (: sorry 
 
-#             data[j]['score'] = new_score
-#             data[j]['categories'] = new_categories
+from nltk.tokenize import TreebankWordTokenizer
 
-#             deletejokes_indexes.append(short_jokes[i])
-#             print([(joke, joke_2), jd_sent_1_2, (short_jokes[i], short_jokes[j])])
+tokenizer = TreebankWordTokenizer()
 
-#             sim_jokes.append([(joke, joke_2), jd_sent_1_2, (short_jokes[i], short_jokes[j])])
-
-# with open ('./simjokes_jaccard.json', "w") as f:
-#     json.dump(sim_jokes, f, indent = 4)
-# f.close()
- 
-# print(sim_jokes)
-# print(deletejokes_indexes)
-
-deletejokes_indexes = []
 with open ('./final_sizes_nodups.json') as f:
     data = json.load(f)
 f.close()
 
-with open ('./simjokes_jaccard.json') as f:
-    sim_jokes = json.load(f)
+# Only checks for duplicates among jokes with length < 50; assumption is that that the longer the joke, the less similar it will be with other jokes 
+short_jokes = [idx for idx, joke in enumerate(data) if joke['size'] < 225] 
+sim_jokes = []
+deletejokes_indexes = []
+
+for i in range(0, len(short_jokes)):
+    index_1 = short_jokes[i]
+    joke = data[index_1]['text']
+    tokens_1 = set(tokenizer.tokenize(joke))
+    # print(joke)
+
+    for j in range (i+1, len(short_jokes)):
+        index_2 = short_jokes[j]
+        joke_2 = data[index_2]['text']
+        tokens_2 = set(tokenizer.tokenize(joke_2))
+        # print(joke_2)
+
+        jd_sent_1_2 = nltk.jaccard_distance(tokens_1, tokens_2)
+
+        ############# Jaccard distance threshold ##############
+        if(jd_sent_1_2 < 0.4): 
+            
+            # note: "If you were a ..., you'd be a ...." jokes need a smaller threshold
+
+            # some other possible cases to catch: [seems to be fine, since it usually has a reply that differs. could manually change too]
+                # What did the .... say to the ...? 
+                # How many .... does it take to change a light bulb?
+                # Did you hear about the .....?
+                # What do you get when you cros a ....?
+            if ("if you were a " in joke.lower() and jd_sent_1_2 > 0.30):
+                continue
+            
+            new_score = (data[index_1]['score'] + data[index_2]['score']) /2 
+            new_categories = list(set(data[index_1]['categories'] + data[index_2]['categories']))
+
+            data[index_2]['score'] = new_score
+            data[index_2]['categories'] = new_categories
+
+            deletejokes_indexes.append(index_1)
+            print([(data[index_1]['text'], data[index_2]['text']), jd_sent_1_2, (index_1, index_2)])
+
+            sim_jokes.append([(joke, joke_2), jd_sent_1_2, (index_1, index_2)])
+
+with open ('./simjokes_jaccard225.json', "w") as f:
+    json.dump(sim_jokes, f, indent = 4)
 f.close()
+ 
+# deletejokes_indexes = []
+# with open ('./final_sizes_nodups.json') as f:
+#     data = json.load(f)
+# f.close()
 
-# short_jokes = [idx for idx, joke in enumerate(data) if joke['size'] < 50] 
+# with open ('./simjokes_jaccard.json') as f:
+#     sim_jokes = json.load(f)
+# f.close()
 
-indexes = [sim[2] for sim in sim_jokes] 
+# indexes = [sim[2] for sim in sim_jokes] 
 
-for tup in indexes:
-    print(tup)
-    joke = data[tup[0]]
-    joke_2 = data[tup[1]]
-    print(joke)
-    print(joke_2)
+# for tup in indexes:
+#     print(tup)
+#     joke = data[tup[0]]
+#     joke_2 = data[tup[1]]
+#     print(joke)
+#     print(joke_2)
     
 #     new_score = (joke['score'] + joke_2['score']) /2
 #     new_categories = list(set(joke['categories'] + joke_2['categories']))
 
-#     data[short_jokes[tup[1]]]['score'] = new_score
-#     data[short_jokes[tup[1]]]['categories'] = new_categories
+#     data[tup[1]]['score'] = new_score
+#     data[tup[1]]['categories'] = new_categories
 #     deletejokes_indexes.append(tup[0])
 
-# for ele in sorted(deletejokes_indexes, reverse = True):  
-#     del data[ele] 
+for ele in sorted(deletejokes_indexes, reverse = True):  
+    del data[ele] 
   
-# with open ('./final_nosimjokes.json', "w") as f:
-#     json.dump(data, f, indent = 4)
+with open ('./final_nosimjokes.json', "w") as f:
+    json.dump(data, f, indent = 4)

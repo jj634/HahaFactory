@@ -27,7 +27,7 @@ def add_tokens(tokenizer, data):
     return result
 
 def update_json():
-    with open("final_sizes_nodups.json") as f:
+    with open("final_nosimjokes.json") as f:
         data = json.load(f)
 
     num_jokes = len(data)

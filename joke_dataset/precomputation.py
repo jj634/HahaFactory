@@ -183,7 +183,7 @@ def add_norms(jokes, norms):
     result = [] 
     for i in range(len(jokes)):
         temp = {}
-        temp['text'] = jokes[i]['joke']
+        temp['text'] = jokes[i]['text']
         temp['categories'] = jokes[i]['categories']
         temp['score'] = jokes[i]['score']
         temp['norm'] = norms[i]

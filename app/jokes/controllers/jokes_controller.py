@@ -47,9 +47,10 @@ def search():
 
     query = request.args.get('search') or []
     # range of values? 0-0.5? 
-    min_score = request.args.get('score') or -1 # change to slider now
+    min_score = request.args.get('score') or 0 # change to slider now
     categories = request.args.getlist('categories')
     sizes = request.args.getlist('sizes')
+    maturity = request.args.get('maturity') or ''
     typo = False
 
     print("original query ------")
@@ -68,6 +69,8 @@ def search():
         query, p_cats, tok_typos, cat_typos, index_typos = pl.parse(query, inv_idx,
                                                        cat_options, parse_dict)
 
+    print(cat_typos)
+    print(index_typos)
     if(cat_typos != [] and tok_typos != []):
         typo = True
         for index in range(len(cat_typos)): 
@@ -151,11 +154,21 @@ def search():
                 "text": joke.text,
                 "categories": joke.categories,
                 "score": str(joke.score),
-                "maturity": joke.maturity,
+                "maturity": str(joke.maturity),
                 "size": str(joke.size),
                 "similarity": str(1.0)
             } for joke in jokes]
             results = siz.size_filter(results, sizes)
+
+    #--------------------- MATURITY  ---------------------#
+     # At end, results is filtered based on maturity. Retouch later.
+    print("Maturity IS: ---------")
+    print(maturity)
+    if maturity:
+        if maturity == 'PG-13': 
+            results = [joke for joke in results if joke['maturity'] == 1 ]
+        if maturity == 'PG':
+            results = [joke for joke in results if joke['maturity'] == "None"] 
 
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim

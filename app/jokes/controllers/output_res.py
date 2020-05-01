@@ -33,7 +33,7 @@ def weight(jac_res, cos_res, min_score, advanced):
     else:
         cos_weight = 0.7*(1.0 - sc_weight)
         jac_weight = 0.3*(1.0 - sc_weight)
-
+    
     for joke_id in jacky.union(cos_key):
         # to discuss - we are making 3 database calls for jaccard categories, this weighting, and metadata. that seems inefficient
         joke_meta = Joke.query.filter_by(id=joke_id).first()
@@ -43,7 +43,6 @@ def weight(jac_res, cos_res, min_score, advanced):
         sc_score = sc_weight * float(joke_meta.score)/5
         weighted_similarity = jac_score
         weighted_similarity += cos_score
-
         weighted_similarity += sc_score
 
         results.append({
@@ -52,9 +51,12 @@ def weight(jac_res, cos_res, min_score, advanced):
                         "score": str(joke_meta.score),
                         "maturity": joke_meta.maturity,
                         "size": str(joke_meta.size),
-                        "similarity": str(weighted_similarity)
+                        "similarity": str(weighted_similarity),
+                        "cos_score": str(cos_score),
+                        "jac_score": str(jac_score),
+                        "sc_score": str(sc_score)
                     })
-    return results, cos_score, jac_score, sc_score
+    return results, cos_weight, jac_weight, sc_weight
 
 def adj_minscore(min_score, results):
     """

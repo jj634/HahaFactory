@@ -134,7 +134,7 @@ class JokeForm extends React.Component {
                 <Form.Group widths='equal'>
                     <Form.Field>
                         <p><b>Relevancy       vs.      Funny Factor</b></p>
-                        <Slider discrete value={this.props.score} color="white" settings={slider_settings} />
+                        <Slider discrete color="white" settings={slider_settings} />
                     </Form.Field>
                     <Form.Dropdown
                         placeholder="Select Maturity"

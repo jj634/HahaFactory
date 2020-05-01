@@ -46,7 +46,8 @@ def search():
     cat_options = [cat.category for cat in Categories.query.all()]
 
     query = request.args.get('search') or []
-    min_score = request.args.get('score') or -1
+    # range of values? 0-0.5? 
+    min_score = request.args.get('score') or -1 # change to slider now
     categories = request.args.getlist('categories')
     sizes = request.args.getlist('sizes')
     typo = False
@@ -117,21 +118,25 @@ def search():
         results_cos = cos.fast_cossim(query, inv_idx, idf_dict)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
-    results = ressy.weight(results_jac, results_cos, min_score)
+    advanced = True if categories else False
+    results, cos_weight, jac_weight, sc_weight = ressy.weight(results_jac, results_cos, min_score, advanced)
+    print("WEIGHTING IS: ---------")
+    str_weighting = "Cosine: {.2f}, Jaccard: {.2f}, Score: {.2f}".format(cos_weight, jac_weight, sc_weight)
+    print(str_weighting)
 
     #--------------------- SCORING ------------------------------------#
     # Temporary: If there are no results from running jaccard + cosine, and a minimum score is provided, results normal min score filtered
-    if not results and min_score != -1: 
-        jokes = Joke.query.filter(Joke.score >= min_score).all()
-        nonrelated_jokes = [{
-            "text": joke.text,
-            "categories": joke.categories,
-            "score": str(joke.score),
-            "maturity": joke.maturity,
-            "size": str(joke.size),
-            "similarity": str(0.16/5*float(joke.score))
-        } for joke in jokes]
-        results += nonrelated_jokes
+    # if not results and min_score != -1: 
+    #     jokes = Joke.query.filter(Joke.score >= min_score).all()
+    #     nonrelated_jokes = [{
+    #         "text": joke.text,
+    #         "categories": joke.categories,
+    #         "score": str(joke.score),
+    #         "maturity": joke.maturity,
+    #         "size": str(joke.size),
+    #         "similarity": str(0.16/5*float(joke.score))
+    #     } for joke in jokes]
+    #     results += nonrelated_jokes
 
     #--------------------- LENGTH ------------------------------------#
     # At end, results is filtered based on length.
@@ -162,7 +167,7 @@ def search():
         print("TYPO EXISTS- New string below: -------------")
         print(typo_string)
 
-    return {"jokes": results, "typo": typo, "typo_query" : typo_string}
+    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight}
 
 
 @jokes.route('/cat-options', methods=['GET'])

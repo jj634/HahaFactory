@@ -1,5 +1,4 @@
 from . import *
-import re
 
 def weight(jac_res, cos_res, min_score):
     """
@@ -41,38 +40,6 @@ def weight(jac_res, cos_res, min_score):
                         "similarity": str(weighted_similarity)
                     })
     return results
-
-def size_filter(jokes, min_size, max_size):
-    """
-    Filters jokes based on given min_size and max_size.
-    Inputs:
-        jokes: list of dictionaries with following keys + values: 
-            - "text": joke text
-            - "categories": joke categories
-            - "score": joke score
-            - "maturity": joke maturiy
-            - "size": joke size
-            - "similarity": joke similarity score. 
-        min_size: min size limit for joke_meta.text (length predefined in jokes_controller.py depending on input)
-        max_size: max size limit for joke_meta.text (length predefined in jokes_controller.py depending on input)
-    Output:
-        resulting dictionary from filtering length of joke text for each joke in input jokes
-    """
-    ret = []
-    if(min_size == -1): 
-        for joke_meta in jokes: 
-            if int(joke_meta["size"]) <= 30: 
-                text = joke_meta["text"]
-                sentence_list = re.split(r"(?<![A-Z])[.!?]\s+(?=[A-Z\"])", text)
-
-                if(len(sentence_list) <= 1):
-                    ret.append(joke_meta)
-    else:
-        for joke_meta in jokes: 
-            if int(joke_meta["size"]) <= max_size and int(joke_meta["size"]) >= min_size:
-                ret.append(joke_meta)
-    return ret
-
 
 def adj_minscore(min_score, results):
     """

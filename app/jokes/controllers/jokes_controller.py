@@ -3,6 +3,7 @@ from . import parsing_lib as pl
 from . import cos_sim as cos
 from . import cat_jaccard as jac
 from . import output_res as ressy
+from . import sizing as siz
 from . import *
 
 @jokes.route('/jokes', methods=['GET', 'POST'])
@@ -47,26 +48,11 @@ def search():
     query = request.args.get('search') or []
     min_score = request.args.get('score') or -1
     categories = request.args.getlist('categories')
-    req_size = request.args.get('size') or ""
+    sizes = request.args.getlist('sizes')
     typo = False
 
     print("original query ------")
     print(query)
-
-    min_size = 0
-    max_size = 1000000
-    if req_size == "Short":
-        min_size = 0
-        max_size = 50
-    elif req_size == "Medium":
-        min_size = 50
-        max_size = 105
-    elif req_size == "Long":
-        min_size = 105
-        max_size = 1000000
-    elif req_size == "One-Liner":
-        min_size = -1
-        max_size = -1
 
     #----------- PARSING -----------#
     # maps lowered text to actual category names
@@ -81,7 +67,6 @@ def search():
         query, p_cats, tok_typos, cat_typos, index_typos = pl.parse(query, inv_idx,
                                                        cat_options, parse_dict)
 
-    # Only checks typos currently if nothing in query matches tokens in inverted_index
     if(cat_typos != [] and tok_typos != []):
         typo = True
         for index in range(len(cat_typos)): 
@@ -150,9 +135,11 @@ def search():
 
     #--------------------- LENGTH ------------------------------------#
     # At end, results is filtered based on length.
-    if req_size:
+    print("Length IS: ---------")
+    print(sizes)
+    if sizes:
         if results: 
-            results = ressy.size_filter(results, min_size, max_size)
+            results = siz.size_filter(results, sizes)
         else: 
             jokes = Joke.query.all()
             results = [{
@@ -163,7 +150,7 @@ def search():
                 "size": str(joke.size),
                 "similarity": str(1.0)
             } for joke in jokes]
-            results = ressy.size_filter(results, min_size, max_size)
+            results = siz.size_filter(results, sizes)
 
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim

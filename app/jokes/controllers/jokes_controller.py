@@ -119,9 +119,9 @@ def search():
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     advanced = True if categories else False
-    results, cos_weight, jac_weight, sc_weight = ressy.weight(results_jac, results_cos, min_score, advanced)
+    results, cos_score, jac_score, sc_score = ressy.weight(results_jac, results_cos, min_score, advanced)
     print("WEIGHTING IS: ---------")
-    str_weighting = "Cosine: {.2f}, Jaccard: {.2f}, Score: {.2f}".format(cos_weight, jac_weight, sc_weight)
+    str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_score, jac_score, sc_score)
     print(str_weighting)
 
     #--------------------- SCORING ------------------------------------#
@@ -167,7 +167,7 @@ def search():
         print("TYPO EXISTS- New string below: -------------")
         print(typo_string)
 
-    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight}
+    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_score, "jaccard": jac_score, "score": sc_score}
 
 
 @jokes.route('/cat-options', methods=['GET'])

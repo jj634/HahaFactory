@@ -49,7 +49,7 @@ def weight(jac_res, cos_res, min_score, advanced):
                         "text": joke_meta.text,
                         "categories": joke_meta.categories,
                         "score": str(joke_meta.score),
-                        "maturity": joke_meta.maturity,
+                        "maturity": str(joke_meta.maturity),
                         "size": str(joke_meta.size),
                         "similarity": str(weighted_similarity),
                         "cos_score": str(cos_score),

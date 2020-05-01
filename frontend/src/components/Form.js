@@ -44,6 +44,7 @@ class JokeForm extends React.Component {
 
     handleChange = (e, { name, value }) => {
         this.setState({ [name]: value })
+        console.log(this.state)
     }
 
     handleSubmit(event) {
@@ -92,10 +93,10 @@ class JokeForm extends React.Component {
         const maturityList = this.createDropDownList(maturities)
 
         const slider_settings = {
-            start: 3,
-            min: 1,
-            max: 5,
-            step: 1,
+            start: 0.25,
+            min: 0,
+            max: 0.5,
+            step: 0.125,
             onChange: value => {
                 this.setState({
                     score: value

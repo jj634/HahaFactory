@@ -115,7 +115,7 @@ class App extends React.Component {
                 <h4> We could not find any results for <b>"{this.state.search}"</b>.</h4>
               </div>
               : null}
-             {this.state.typo & this.state.typo_query !='' 
+             {this.state.typo & this.state.typo_query !=='' 
                ? <div> 
                 <h4> Did you mean... <b>"{this.state.typo_query}"</b>? </h4>
                 <h4> We are showing results for <b>"{this.state.typo_query}"</b>.</h4>

@@ -1,11 +1,10 @@
 // adapted from: https://pusher.com/tutorials/consume-restful-api-react
 
 import React from 'react'
-import { Icon, Label } from 'semantic-ui-react'
-import { Button, Popup } from 'semantic-ui-react'
+import { Icon, Label, Popup, Button } from 'semantic-ui-react'
 
 const JokeResults = ({ jokes }) => {
-  if (jokes.length == 0) {
+  if (jokes.length === 0) {
     return (
       <React.Fragment>
       </React.Fragment>

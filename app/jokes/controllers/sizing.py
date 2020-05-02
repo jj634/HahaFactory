@@ -35,6 +35,6 @@ def size_filter(jokes, sizes):
             min_size = sizes_dict[size_val][0]
             max_size = sizes_dict[size_val][1]
             for joke_meta in jokes: 
-                if int(joke_meta["size"]) <= max_size and int(joke_meta["size"]) >= min_size:
+                if int(joke_meta["size"]) <= max_size and int(joke_meta["size"]) >= min_size and joke_meta not in ret:
                     ret.append(joke_meta)
     return ret

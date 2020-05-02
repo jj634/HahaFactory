@@ -84,4 +84,8 @@ def closest_word(query, alt_opts):
             dist = edit_distance(query, alt_opts[i])
             result.append((alt_opts[i], dist))
     result.sort(key=lambda t: t[1])
-    return result[0]
+    # return result[0]
+    if result: 
+        return result[0]
+    else: 
+        return None

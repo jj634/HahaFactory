@@ -52,25 +52,16 @@ diff_dict = {
 tokenizer = TreebankWordTokenizer()
 
 
-def parse(query, inv_idx, cats, parse_dict):
+def parse(query, cats, parse_dict):
     """
-    Returns tuple of:
-            'toks': list of toks for fast cosine
-            'cats': list of categories for jaccard
-            'typo_toks': Did you mean... for tokens
-                                (typo, (crct, dist)) list where typo is what user inputted
-                                and crct is the suggested term and dist is the edit distance
-            'typo_cats': Did you mean... for categories
-                                (typo, (crct, dist)) list where typo is what user inputted
-                                and crct is the suggested term and dist is the edit distance
+    Returns lists of categories parsed from query
 
     Inputs:
             query: string
-            inv_idx: inverse idx of the toks
             cats: lst of categories
             parse_dict: maps lowered cat names to real cat names
+
     """
-    inv_idx = [k for k, v in inv_idx.items()]  # list of all tokens
     query = query.lower()
     cats = [c.lower() for c in cats]  # lower categories to match lowered query
 
@@ -105,6 +96,31 @@ def parse(query, inv_idx, cats, parse_dict):
     # list of categories for Jaccard
     input_cats = [parse_dict[c] for c in input_cats]
 
+    return input_cats
+
+def getTypos(query, inv_idx, cats):
+    """
+    Returns tuple of:
+            'toks': list of toks for fast cosine
+            'cats': list of categories for jaccard
+            'typo_toks': Did you mean... for tokens
+                                (typo, (crct, dist)) list where typo is what user inputted
+                                and crct is the suggested term and dist is the edit distance
+            'typo_cats': Did you mean... for categories
+                                (typo, (crct, dist)) list where typo is what user inputted
+                                and crct is the suggested term and dist is the edit distance
+
+    Inputs:
+            query: string
+            inv_idx: inverse idx of the toks
+            cats: lst of categories
+    """
+    inv_idx = [k for k, v in inv_idx.items()]  # list of all tokens
+    query = query.lower()
+    cats = [c.lower() for c in cats]  # lower categories to match lowered query
+    cats += diff_dict.keys()
+    print(cats)
+    
     # get toks
     toks = tokenizer.tokenize(query)
     new_toks = []
@@ -127,4 +143,4 @@ def parse(query, inv_idx, cats, parse_dict):
             closest_toks[t] = tl.closest_word(t, inv_idx)
             closest_cats[t] = tl.closest_word(t, cats)
 
-    return new_toks, input_cats, list(closest_toks.items()), list(closest_cats.items()), index_typos
+    return new_toks, list(closest_toks.items()), list(closest_cats.items()), index_typos

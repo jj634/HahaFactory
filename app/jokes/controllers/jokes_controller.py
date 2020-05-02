@@ -43,11 +43,10 @@ with open('./idf_dict.json') as f:
 
 @jokes.route('/search', methods=['GET'])
 def search():
-    cat_options = [cat.category for cat in Categories.query.all()]
+    cat_options = sorted([cat.category for cat in Categories.query.all()])
 
     query = request.args.get('search') or []
-    # range of values? 0-0.5? 
-    min_score = request.args.get('score') or 0 # change to slider now
+    weighting = request.args.get('score') or 0 # input values are from [0, 0.5]
     categories = request.args.getlist('categories')
     sizes = request.args.getlist('sizes')
     maturity = request.args.get('maturity') or ''
@@ -66,10 +65,11 @@ def search():
     
     if query:
         # next step: incorporate the thesaurus
-        query, p_cats, tok_typos, cat_typos, index_typos = pl.parse(query, inv_idx,
-                                                       cat_options, parse_dict)
+        query, tok_typos, cat_typos, index_typos = pl.getTypos(query, inv_idx,
+                                                       cat_options) 
 
     print(cat_typos)
+    print(tok_typos)
     print(index_typos)
     if(cat_typos != [] and tok_typos != []):
         typo = True
@@ -77,15 +77,21 @@ def search():
             cat_suggestion = cat_typos[index][1]
             free_suggestion= tok_typos[index][1]
 
-            if cat_suggestion[1] < free_suggestion[1]: 
+            if (cat_suggestion is None and free_suggestion is None):
+                continue
+            elif cat_suggestion is None: 
+                term = free_suggestion[0]
+            elif free_suggestion is None: 
+                term = cat_suggest_tuple[0]
+            elif cat_suggestion[1] < free_suggestion[1]: 
                 term = cat_suggest_tuple[0]
             else: 
                 term = free_suggestion[0]
             query.insert(index_typos[index], term)
-        if query:
-            query_string = " ".join(query)
-            query, p_cats , _, _, _ = pl.parse(query_string, inv_idx,
-                                                       cat_options, parse_dict)
+    if query:
+        query_string = " ".join(query)
+        p_cats = pl.parse(query_string, cat_options, parse_dict)
+
     categories_list = categories + p_cats
     categories_list = list(set(categories_list))
 
@@ -122,7 +128,7 @@ def search():
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     advanced = True if categories else False
-    results, cos_score, jac_score, sc_score = ressy.weight(results_jac, results_cos, min_score, advanced)
+    results, cos_score, jac_score, sc_score = ressy.weight(results_jac, results_cos, weighting, advanced)
     print("WEIGHTING IS: ---------")
     str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_score, jac_score, sc_score)
     print(str_weighting)
@@ -175,7 +181,6 @@ def search():
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim
     results = sorted(results, key=lambda x: (x["similarity"]), reverse=True)
-    cat_options = sorted(cat_options)
 
     typo_string = " ".join(query)
     if typo:

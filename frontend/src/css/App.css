@@ -102,3 +102,12 @@ input[type=radio] {
   justify-content: center;
   padding-bottom: 10px;
 }
+
+.doughnut {
+  color: purple;
+  margin-top: 7px;
+}
+
+.pointing {
+  color: blue;
+}

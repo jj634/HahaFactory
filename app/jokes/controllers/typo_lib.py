@@ -1,3 +1,5 @@
+import math
+
 def insertion_cost(mes, j):
     return 1
 
@@ -78,7 +80,8 @@ def closest_word(query, alt_opts):
     """
     result = []
     for i in range(len(alt_opts)):
-        dist = edit_distance(query, alt_opts[i])
-        result.append((alt_opts[i], dist))
+        if abs(len(query) - len(alt_opts[i])) <= 3:
+            dist = edit_distance(query, alt_opts[i])
+            result.append((alt_opts[i], dist))
     result.sort(key=lambda t: t[1])
     return result[0]

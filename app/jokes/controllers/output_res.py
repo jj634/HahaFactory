@@ -1,12 +1,11 @@
 from . import *
-import re
 
-def weight(jac_res, cos_res, min_score):
+def weight(jac_res, cos_res, min_score, advanced):
     """
     Combine results from jaccard and cosine similarity
     Inputs:
         jac_res, cos_res: dictionary mapping joke_id to sim_score
-        min_score: string
+        min_score: string [value between 0 and 0.5]
     Output:
         list of dictionaries with following keys + values: 
             - "text": joke text
@@ -18,61 +17,46 @@ def weight(jac_res, cos_res, min_score):
         Currently, 20% weight is given to Jaccard, 70% to Cosine Similarity, 20% to jokes > min_score and 10% to jokes < min_score.
         Note: if a joke is not in one of the input dictionaries, its sim_score for that measure is 0.
     """
+    
     results = []
     jacky = set(jac_res.keys())  # haha get it? jac_key -> jacky
     cos_key = set(cos_res.keys())
+    cos_weight = None
+    jac_weight = None
+    sc_weight = float(min_score) # this is relevance vs funny
 
+
+    # Change below weightings for ranking
+    if advanced:
+        cos_weight = 0.6*(1.0 - sc_weight)
+        jac_weight = 0.4*(1.0 - sc_weight)
+    else:
+        cos_weight = 0.7*(1.0 - sc_weight)
+        jac_weight = 0.3*(1.0 - sc_weight)
+    
     for joke_id in jacky.union(cos_key):
         # to discuss - we are making 3 database calls for jaccard categories, this weighting, and metadata. that seems inefficient
         joke_meta = Joke.query.filter_by(id=joke_id).first()
 
-        weighted_similarity = 0.20 * jac_res.get(joke_id, 0)
-        weighted_similarity += 0.70 * cos_res.get(joke_id, 0)
-
-        weighted_similarity += 0.20 * float(joke_meta.score)/5 if float(
-            joke_meta.score) >= float(min_score) else 0.10 * float(joke_meta.score)/5
+        cos_score = cos_weight * cos_res.get(joke_id, 0)
+        jac_score = jac_weight * jac_res.get(joke_id, 0)
+        sc_score = sc_weight * float(joke_meta.score)/5
+        weighted_similarity = jac_score
+        weighted_similarity += cos_score
+        weighted_similarity += sc_score
 
         results.append({
                         "text": joke_meta.text,
                         "categories": joke_meta.categories,
                         "score": str(joke_meta.score),
-                        "maturity": joke_meta.maturity,
+                        "maturity": str(joke_meta.maturity),
                         "size": str(joke_meta.size),
-                        "similarity": str(weighted_similarity)
+                        "similarity": str(weighted_similarity),
+                        "cos_score": str(cos_score),
+                        "jac_score": str(jac_score),
+                        "sc_score": str(sc_score)
                     })
-    return results
-
-def size_filter(jokes, min_size, max_size):
-    """
-    Filters jokes based on given min_size and max_size.
-    Inputs:
-        jokes: list of dictionaries with following keys + values: 
-            - "text": joke text
-            - "categories": joke categories
-            - "score": joke score
-            - "maturity": joke maturiy
-            - "size": joke size
-            - "similarity": joke similarity score. 
-        min_size: min size limit for joke_meta.text (length predefined in jokes_controller.py depending on input)
-        max_size: max size limit for joke_meta.text (length predefined in jokes_controller.py depending on input)
-    Output:
-        resulting dictionary from filtering length of joke text for each joke in input jokes
-    """
-    ret = []
-    if(min_size == -1): 
-        for joke_meta in jokes: 
-            if int(joke_meta["size"]) <= 30: 
-                text = joke_meta["text"]
-                sentence_list = re.split(r"(?<![A-Z])[.!?]\s+(?=[A-Z\"])", text)
-
-                if(len(sentence_list) <= 1):
-                    ret.append(joke_meta)
-    else:
-        for joke_meta in jokes: 
-            if int(joke_meta["size"]) <= max_size and int(joke_meta["size"]) >= min_size:
-                ret.append(joke_meta)
-    return ret
-
+    return results, cos_weight, jac_weight, sc_weight
 
 def adj_minscore(min_score, results):
     """

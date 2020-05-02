@@ -1,3 +1,2 @@
 export default `PG
-PG-13
-R`.split('\n');
+PG-13`.split('\n');

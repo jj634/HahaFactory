@@ -3,6 +3,7 @@ from . import parsing_lib as pl
 from . import cos_sim as cos
 from . import cat_jaccard as jac
 from . import output_res as ressy
+from . import sizing as siz
 from . import *
 
 @jokes.route('/jokes', methods=['GET', 'POST'])
@@ -45,28 +46,15 @@ def search():
     cat_options = [cat.category for cat in Categories.query.all()]
 
     query = request.args.get('search') or []
-    min_score = request.args.get('score') or -1
+    # range of values? 0-0.5? 
+    min_score = request.args.get('score') or 0 # change to slider now
     categories = request.args.getlist('categories')
-    req_size = request.args.get('size') or ""
+    sizes = request.args.getlist('sizes')
+    maturity = request.args.get('maturity') or ''
     typo = False
 
     print("original query ------")
     print(query)
-
-    min_size = 0
-    max_size = 1000000
-    if req_size == "Short":
-        min_size = 0
-        max_size = 50
-    elif req_size == "Medium":
-        min_size = 50
-        max_size = 105
-    elif req_size == "Long":
-        min_size = 105
-        max_size = 1000000
-    elif req_size == "One-Liner":
-        min_size = -1
-        max_size = -1
 
     #----------- PARSING -----------#
     # maps lowered text to actual category names
@@ -81,7 +69,8 @@ def search():
         query, p_cats, tok_typos, cat_typos, index_typos = pl.parse(query, inv_idx,
                                                        cat_options, parse_dict)
 
-    # Only checks typos currently if nothing in query matches tokens in inverted_index
+    print(cat_typos)
+    print(index_typos)
     if(cat_typos != [] and tok_typos != []):
         typo = True
         for index in range(len(cat_typos)): 
@@ -132,38 +121,56 @@ def search():
         results_cos = cos.fast_cossim(query, inv_idx, idf_dict)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
-    results = ressy.weight(results_jac, results_cos, min_score)
+    advanced = True if categories else False
+    results, cos_score, jac_score, sc_score = ressy.weight(results_jac, results_cos, min_score, advanced)
+    print("WEIGHTING IS: ---------")
+    str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_score, jac_score, sc_score)
+    print(str_weighting)
 
     #--------------------- SCORING ------------------------------------#
     # Temporary: If there are no results from running jaccard + cosine, and a minimum score is provided, results normal min score filtered
-    if not results and min_score != -1: 
-        jokes = Joke.query.filter(Joke.score >= min_score).all()
-        nonrelated_jokes = [{
-            "text": joke.text,
-            "categories": joke.categories,
-            "score": str(joke.score),
-            "maturity": joke.maturity,
-            "size": str(joke.size),
-            "similarity": str(0.16/5*float(joke.score))
-        } for joke in jokes]
-        results += nonrelated_jokes
+    # if not results and min_score != -1: 
+    #     jokes = Joke.query.filter(Joke.score >= min_score).all()
+    #     nonrelated_jokes = [{
+    #         "text": joke.text,
+    #         "categories": joke.categories,
+    #         "score": str(joke.score),
+    #         "maturity": joke.maturity,
+    #         "size": str(joke.size),
+    #         "similarity": str(0.16/5*float(joke.score))
+    #     } for joke in jokes]
+    #     results += nonrelated_jokes
 
     #--------------------- LENGTH ------------------------------------#
     # At end, results is filtered based on length.
-    if req_size:
+    print("Length IS: ---------")
+    print(sizes)
+    if sizes:
         if results: 
-            results = ressy.size_filter(results, min_size, max_size)
+            results = siz.size_filter(results, sizes)
         else: 
             jokes = Joke.query.all()
             results = [{
                 "text": joke.text,
                 "categories": joke.categories,
                 "score": str(joke.score),
-                "maturity": joke.maturity,
+                "maturity": str(joke.maturity),
                 "size": str(joke.size),
                 "similarity": str(1.0)
             } for joke in jokes]
-            results = ressy.size_filter(results, min_size, max_size)
+            results = siz.size_filter(results, sizes)
+
+    #--------------------- MATURITY  ---------------------#
+     # At end, results is filtered based on maturity. Retouch later.
+    print("Maturity IS: ---------")
+    print(maturity)
+    if maturity:
+        if maturity == 'PG-13': 
+            results = [joke for joke in results if joke['maturity'] == '1' ]
+        if maturity == 'PG':
+            print(results[0]['maturity'])
+            print(results[1]['maturity'])
+            results = [joke for joke in results if joke['maturity'] == "None"] 
 
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim
@@ -175,7 +182,7 @@ def search():
         print("TYPO EXISTS- New string below: -------------")
         print(typo_string)
 
-    return {"jokes": results, "typo": typo, "typo_query" : typo_string}
+    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_score, "jaccard": jac_score, "score": sc_score}
 
 
 @jokes.route('/cat-options', methods=['GET'])

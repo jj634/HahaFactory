@@ -14,7 +14,7 @@ import Form from './components/Form'
 import JokeResults from './components/JokeResults';
 
 import { Row, Col } from 'react-bootstrap'
-import { Dimmer, Loader, Container} from 'semantic-ui-react'
+import { Dimmer, Loader, Container } from 'semantic-ui-react'
 
 class App extends React.Component {
   constructor(props) {
@@ -22,14 +22,14 @@ class App extends React.Component {
     this.state = {
       isLoaded: false,
       jokes: [],
-      typo: false, 
+      typo: false,
       typo_query: '',
       query: [],
 
       categories: [],
       score: '',
-      search: '', 
-      sizes: [],    
+      search: '',
+      sizes: [],
       maturity: ''
     }
   }
@@ -38,7 +38,7 @@ class App extends React.Component {
     this.fetchResults()
   }
 
-  fetchResults(){ 
+  fetchResults() {
     const URLParams = new URLSearchParams(window.location.search)
 
     const category_param = URLParams.getAll("categories")
@@ -57,13 +57,13 @@ class App extends React.Component {
         this.setState({
           isLoaded: true,
           jokes: response.data.jokes,
-          typo: response.data.typo, 
+          typo: response.data.typo,
           typo_query: response.data.typo_query,
           query: response.data.query,
 
           categories: category_param,
           score: score_param,
-          search: search_param, 
+          search: search_param,
           sizes: size_param,
           maturity: maturity_param
         })
@@ -96,45 +96,45 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.isLoaded) {return (
-      <Container>
-        <Row className="justify-content-md-center">
-          <Col>
-            <header className="App-header">
-              <h1>HahaFactory:</h1>
-              <h2>Finding Hilarious Jokes for You</h2>
-              <img src={logo} className="App-logo" alt="logo" />
-            </header>
+    if (this.state.isLoaded) {
+      return (
+        <Container>
+          <Row className="justify-content-md-center">
+            <Col>
+              <header className="App-header">
+                <h1>HahaFactory:</h1>
+                <h2>Finding Hilarious Jokes for You</h2>
+                <img src={logo} className="App-logo" alt="logo" />
+              </header>
 
-          <Form score = {this.state.score} categories = {this.state.categories} search = {this.state.search} sizes = {this.state.sizes} maturity = {this.state.maturity}/>
+              <Form score={this.state.score} categories={this.state.categories} search={this.state.search} sizes={this.state.sizes} maturity={this.state.maturity} />
 
-          </Col>
-        </Row>
-        <Row>
-          <Col className="jokes-col">
-            {this.state.typo & this.state.typo_query === ''
-              ? <div>
-                <h4> We could not find any results for <b>"{this.state.search}"</b>.</h4>
-              </div>
-              : null}
-             {this.state.typo & this.state.typo_query !=='' 
-               ? <div> 
-                <h4> Did you mean... <b>"{this.state.typo_query}"</b>? </h4>
-                <h4> We are showing results for <b>"{this.state.typo_query}"</b>.</h4>
+            </Col>
+          </Row>
+          <Row>
+            <Col className="jokes-col">
+              {this.state.typo & this.state.typo_query === ''
+                ? <div>
+                  <h4> We could not find any results for <b>"{this.state.search}"</b>.</h4>
                 </div>
-               : null}
-             <JokeResults jokes={this.state.jokes} query = {this.state.query}/> 
-          </Col>
-        </Row>
-      </Container >
+                : null}
+              {this.state.typo & this.state.typo_query !== ''
+                ? <div>
+                  <h4> Did you mean... <b>"{this.state.typo_query}"</b>? </h4>
+                  <h4> We are showing results for <b>"{this.state.typo_query}"</b>.</h4>
+                </div>
+                : null}
+              <JokeResults jokes={this.state.jokes} query={this.state.query} />           </Col>
+          </Row>
+        </Container >
       )
-   }
-   else return (
+    }
+    else return (
       <Dimmer active inverted>
         <Loader size="large" >Loading</Loader>
       </Dimmer>
-      )
-   }
+    )
+  }
 }
 
 export default App;

@@ -4,19 +4,23 @@ import { withRouter } from 'react-router-dom'
 
 import { Form } from 'semantic-ui-react'
 import { Slider } from "react-semantic-ui-range";
+import Accordion from 'react-bootstrap/Accordion';
+import Card from 'react-bootstrap/Card'
+import Button from 'react-bootstrap/Button'
 import sizes from '../images/size';
 import maturities from '../images/maturity'
+
 
 class JokeForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             isLoaded: false, // indicates if categories have been loaded from API GET request
-            cat_options: [],         
+            cat_options: [],
 
-            categories: this.props.categories || [], 
-            search: this.props.search || '', 
-            score: this.props.score || '', 
+            categories: this.props.categories || [],
+            search: this.props.search || '',
+            score: this.props.score || '',
             sizes: this.props.sizes || [],
             maturity: this.props.maturity || '',
             displayMessage: false
@@ -26,15 +30,15 @@ class JokeForm extends React.Component {
     }
 
     componentDidMount() {
-            axios({
-                method: 'GET',
-                // url: `/api/cat-options`,
-                url: `http://localhost:5000/api/cat-options`,
-            })
+        axios({
+            method: 'GET',
+            // url: `/api/cat-options`,
+            url: `http://localhost:5000/api/cat-options`,
+        })
             .then((response) => {
                 this.setState({
-                    cat_options: response.data.categories, 
-                    isLoaded: true, 
+                    cat_options: response.data.categories,
+                    isLoaded: true,
                 })
             })
             .catch(err =>
@@ -58,7 +62,7 @@ class JokeForm extends React.Component {
         const maturity_empty = maturity === null || maturity === ""
         const size_empty = sizes === null || sizes.length == 0
 
-        if((search_empty && cat_empty && size_empty) && (!score_empty || !maturity_empty)){
+        if ((search_empty && cat_empty && size_empty) && (!score_empty || !maturity_empty)) {
             this.setState({
                 displayMessage: true
             })
@@ -111,73 +115,91 @@ class JokeForm extends React.Component {
                 })
             }
         };
-      
+
         return (
-            <Form onSubmit={this.handleSubmit} size = "large" key = "large">
+            <Form onSubmit={this.handleSubmit} size="large" key="large">
                 <Form.Input
                     placeholder="Enter your search"
                     name="search"
                     label="Keywords"
                     type="text"
                     onChange={this.handleChange}
-                    defaultValue={this.props.search} 
+                    defaultValue={this.props.search}
                     clearable
                 />
 
-                <Form.Dropdown
-                    closeOnChange
-                    placeholder="Select Categories"
-                    name="categories"
-                    label="Categories"
-                    multiple
-                    search
-                    selection
-                    options={categoryList}
-                    onChange={this.handleChange}
-                    defaultValue = {this.props.categories}
-                    clearable
-                />
+                <div className='mb-3'>
+                    <Accordion defaultActiveKey="0">
+                        <Card>
+                            <Card.Header>
+                                <Accordion.Toggle as={Button} variant="link" style={{ backgroundColor: 'white' }} eventKey="1">
+                                    Advanced Search
+                            </Accordion.Toggle>
+                            </Card.Header>
+                            <Accordion.Collapse eventKey="1">
+                                <Card.Body>
+                                    < Form.Dropdown
+                                        closeOnChange
+                                        placeholder="Select Categories"
+                                        name="categories"
+                                        label="Categories"
+                                        multiple
+                                        search
+                                        selection
+                                        options={categoryList}
+                                        onChange={this.handleChange}
+                                        defaultValue={this.props.categories}
+                                        clearable
+                                    />
 
-                
-                <Form.Group widths='equal'>
-                    <Form.Field>
-                        <p><b>Relevancy       vs.      Funny Factor</b></p>
-                        <Slider discrete color="white" settings={slider_settings} />
-                    </Form.Field>
-                    <Form.Dropdown
-                        placeholder="Select Maturity"
-                        name="maturity"
-                        label="Maturity Rating"
-                        selection
-                        clearable
-                        options={maturityList}
-                        onChange={this.handleChange}
-                        defaultValue = {this.props.maturity}
-                    />
+                                    <Form.Group widths='equal'>
+                                        <Form.Field>
+                                            <p><b>Relevancy       vs.      Funny Factor</b></p>
+                                            <Slider discrete color="white" settings={slider_settings} />
+                                        </Form.Field>
+                                        <Form.Dropdown
+                                            placeholder="Select Maturity"
+                                            name="maturity"
+                                            label="Maturity Rating"
+                                            selection
+                                            clearable
+                                            options={maturityList}
+                                            onChange={this.handleChange}
+                                            defaultValue={this.props.maturity}
+                                        />
 
-                    <Form.Dropdown
-                        placeholder = "Select Joke Length"
-                        name = "sizes"
-                        label = "Joke Length"
-                        selection
-                        clearable
-                        multiple
-                        options = {sizeList}
-                        onChange = {this.handleChange}
-                        defaultValue = {this.props.sizes}
-                    />
-                </Form.Group>
+                                        <Form.Dropdown
+                                            placeholder="Select Joke Length"
+                                            name="sizes"
+                                            label="Joke Length"
+                                            selection
+                                            clearable
+                                            multiple
+                                            options={sizeList}
+                                            onChange={this.handleChange}
+                                            defaultValue={this.props.sizes}
+                                        />
+                                    </Form.Group>
 
-                {this.state.displayMessage
-                    ? 
-                    <h5 style={{color:'black'}}>Please provide an input for "Keywords", "Categories" or "Joke Length" to search.</h5>
-                    : null}
+                                </Card.Body>
+                            </Accordion.Collapse>
+                        </Card>
+                    </Accordion>
+                </div>
+
+                {
+                    this.state.displayMessage
+                        ?
+                        <h5 style={{ color: 'black' }}>Please provide an input for "Keywords", "Categories" or "Joke Length" to search.</h5>
+                        : null
+                }
 
                 <Form.Group inline>
                     <Form.Button inline center secondary type="submit" size="large">Find Jokes</Form.Button>
                     <Form.Button center primary type="submit" size="large">I'm Feeling Funny!</Form.Button>
                 </Form.Group>
-            </Form>
+            </Form >
+
         )
     }
 }

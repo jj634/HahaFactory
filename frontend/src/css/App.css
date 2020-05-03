@@ -111,3 +111,8 @@ input[type=radio] {
 .pointing {
   color: blue;
 }
+
+.Highlight {
+  background-color: #ffd54f;
+  padding:0
+}

@@ -68,9 +68,6 @@ def search():
         query, tok_typos, cat_typos, index_typos = pl.getTypos(query, inv_idx,
                                                        cat_options) 
 
-    print(cat_typos)
-    print(tok_typos)
-    print(index_typos)
     if(cat_typos != [] and tok_typos != []):
         typo = True
         for index in range(len(cat_typos)): 
@@ -185,7 +182,7 @@ def search():
         print("TYPO EXISTS- New string below: -------------")
         print(typo_string)
 
-    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_score, "jaccard": jac_score, "score": sc_score}
+    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_score, "jaccard": jac_score, "score": sc_score, "query" : query}
 
 
 @jokes.route('/cat-options', methods=['GET'])

@@ -2,8 +2,9 @@
 
 import React from 'react'
 import { Icon, Label, Popup, Button } from 'semantic-ui-react'
+import Highlighter from "react-highlight-words";
 
-const JokeResults = ({ jokes }) => {
+const JokeResults = ({ jokes, query }) => {
   if (jokes.length === 0) {
     return (
       <React.Fragment>
@@ -18,7 +19,13 @@ const JokeResults = ({ jokes }) => {
         <div>
         <div className="card">
           <div className="card-body">
-            {joke.text.split('\n').map ((item, i) => <h5 key={i}>{item}</h5>)}
+            {joke.text.split('\n').map((item, i) => <h5 key={i}> <Highlighter
+              highlightClassName="Highlight"
+              searchWords={query}
+              autoEscape={true}
+              textToHighlight={item}
+            /></h5>)}
+            
             {/* <h6 className="card-subtitle mb-2 text-muted">{joke.score}</h6> */}
               {joke.categories.map((cat) => <Label>
                 {cat}

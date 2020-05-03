@@ -24,6 +24,7 @@ class App extends React.Component {
       jokes: [],
       typo: false, 
       typo_query: '',
+      query: [],
 
       categories: [],
       score: '',
@@ -58,6 +59,7 @@ class App extends React.Component {
           jokes: response.data.jokes,
           typo: response.data.typo, 
           typo_query: response.data.typo_query,
+          query: response.data.query,
 
           categories: category_param,
           score: score_param,
@@ -121,7 +123,7 @@ class App extends React.Component {
                 <h4> We are showing results for <b>"{this.state.typo_query}"</b>.</h4>
                 </div>
                : null}
-             <JokeResults jokes={this.state.jokes}/> 
+             <JokeResults jokes={this.state.jokes} query = {this.state.query}/> 
           </Col>
         </Row>
       </Container >

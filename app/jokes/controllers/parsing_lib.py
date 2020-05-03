@@ -119,7 +119,6 @@ def getTypos(query, inv_idx, cats):
     query = query.lower()
     cats = [c.lower() for c in cats]  # lower categories to match lowered query
     cats += diff_dict.keys()
-    print(cats)
     
     # get toks
     toks = tokenizer.tokenize(query)

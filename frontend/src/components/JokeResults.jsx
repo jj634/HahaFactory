@@ -3,6 +3,8 @@
 import React from 'react'
 import { Icon, Label, Popup, Button } from 'semantic-ui-react'
 import Highlighter from "react-highlight-words";
+import Rating from '@material-ui/lab/Rating';
+
 
 const JokeResults = ({ jokes, query }) => {
   if (jokes.length === 0) {
@@ -26,13 +28,18 @@ const JokeResults = ({ jokes, query }) => {
               textToHighlight={item}
             /></h5>)}
             
-            {/* <h6 className="card-subtitle mb-2 text-muted">{joke.score}</h6> */}
               {joke.categories.map((cat) => <Label>
                 {cat}
               </Label>)}
-              <h6 className="doughnut">Joke Score (stars pls): {joke.score}</h6>
+              <div>
+              <Popup content={joke.score} position='right center' trigger={
+                <h6 className="doughnut">Joke Rating: 
+                  <Rating className="rating_stars" name="half-rating-read" defaultValue={joke.score} precision={0.05} readOnly />
+                </h6>
+              }/>
+              </div>
               
-              <Popup position='bottom left' trigger={<h6 className="doughnut">Similarity Score: {joke.similarity}</h6>}>
+              <Popup position='right center' trigger={<h6 className="sim_sc_display">Similarity Score: {joke.similarity}</h6>}>
                 <Popup.Header>Here are the details!</Popup.Header>
                   <Popup.Content>
                     <h6 className="doughnut">Keywords Weight (cosine): {joke.cos_score}</h6>

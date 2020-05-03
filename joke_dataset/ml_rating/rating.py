@@ -50,7 +50,7 @@ pg13_maturity = [
     'knife'
 ]
 
-with open ('../inv_idx_free_2.json') as f: 
+with open ('../inv_idx_free.json') as f: 
     inv_idx = json.load(f)
 
 with open ('../final_sizes.json') as f: 
@@ -67,6 +67,6 @@ bad_jokes = list(set(bad_jokes))
 for index in bad_jokes: 
     data[index-1]['maturity'] = 1
 
-with open('../final_sizes2.json', 'w') as f:
+with open('../final_sizes.json', 'w') as f:
     json.dump(data, f, indent=4)
 

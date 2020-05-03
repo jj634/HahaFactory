@@ -23,7 +23,7 @@ try:
                                   port="5432",
                                   database="hahadata")
    cursor = connection.cursor()
-   with open ('./final_sizes2.json') as f: 
+   with open ('./final_sizes.json') as f: 
        data = json.load(f)
        string = "\'" + json.dumps(data) + "\'"
        postgres_insert_query = "Insert into jokes (text, score, categories, norm, size, maturity) select text, score, categories, norm, size, maturity from json_populate_recordset(null::jokes, " + string + ");"

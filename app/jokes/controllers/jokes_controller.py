@@ -35,7 +35,7 @@ def handle_jokes():
         return {"count": len(results), "jokes": results}
 
 
-with open('./inv_idx_free_2.json') as f:
+with open('./inv_idx_free.json') as f:
     inv_idx = json.load(f)
 
 with open('./idf_dict.json') as f:

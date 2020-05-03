@@ -174,8 +174,6 @@ def search():
         if maturity == 'PG-13': 
             results = [joke for joke in results if joke['maturity'] == '1' ]
         if maturity == 'PG':
-            print(results[0]['maturity'])
-            print(results[1]['maturity'])
             results = [joke for joke in results if joke['maturity'] == "None"] 
 
     #--------------------- SORTING ---------------------#

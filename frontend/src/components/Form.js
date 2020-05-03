@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 
 import { Form } from 'semantic-ui-react'
 import { Slider } from "react-semantic-ui-range";
-import scores from '../images/scores';
 import sizes from '../images/size';
 import maturities from '../images/maturity'
 
@@ -19,7 +18,8 @@ class JokeForm extends React.Component {
             search: this.props.search || '', 
             score: this.props.score || '', 
             sizes: this.props.sizes || [],
-            maturity: this.props.maturity
+            maturity: this.props.maturity || '',
+            displayMessage: false
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         // this.createDropDownList = this.createDropDownList(this);
@@ -44,7 +44,6 @@ class JokeForm extends React.Component {
 
     handleChange = (e, { name, value }) => {
         this.setState({ [name]: value })
-        console.log(this.state)
     }
 
     handleSubmit(event) {
@@ -52,28 +51,38 @@ class JokeForm extends React.Component {
         const { search, categories, score, sizes, maturity } = this.state
 
         const params = new URLSearchParams()
-        if (this.state.search != null) params.append("search", search)
 
-        if (this.state.categories !== null) {
-            categories.forEach(cat => {
-                params.append("categories", cat);
+        const search_empty = search === null || search === ""
+        const cat_empty = categories === null || categories.length == 0
+        const score_empty = score === null || score === ""
+        const maturity_empty = maturity === null || maturity === ""
+        const size_empty = sizes === null || sizes.length == 0
+
+        if((search_empty && cat_empty && size_empty) && (!score_empty || !maturity_empty)){
+            this.setState({
+                displayMessage: true
+            })
+        } else {
+            if (!search_empty) params.append("search", search)
+            if (!cat_empty) {
+                categories.forEach(cat => {
+                    params.append("categories", cat);
+                })
+            }
+            if (!score_empty) params.append("score", score)
+            if (!maturity_empty) params.append("maturity", maturity)
+            if (!size_empty) {
+                sizes.forEach(size => {
+                    params.append("sizes", size);
+                })
+            }
+
+            const url = '?' + params.toString()
+            this.props.history.push({
+                pathname: '/',
+                search: url
             })
         }
-
-        if (this.state.score != null) params.append("score", score)
-        if (this.state.maturity != null) params.append("maturity", maturity)
-
-        if (this.state.sizes !== null) {
-            sizes.forEach(size => {
-                params.append("sizes", size);
-                })
-        }
-
-        const url = '?'+params.toString()
-        this.props.history.push({
-            pathname: '/',
-            search: url
-        })
     }
 
     createDropDownList = (list) => {
@@ -88,12 +97,11 @@ class JokeForm extends React.Component {
 
     render() {
         const categoryList = this.createDropDownList(this.state.cat_options)
-        const scoreList = this.createDropDownList(scores)
         const sizeList = this.createDropDownList(sizes)
         const maturityList = this.createDropDownList(maturities)
 
         const slider_settings = {
-            start: 0.25,
+            start: this.props.score || 0.25,
             min: 0,
             max: 0.5,
             step: 0.125,
@@ -159,6 +167,11 @@ class JokeForm extends React.Component {
                         defaultValue = {this.props.sizes}
                     />
                 </Form.Group>
+
+                {this.state.displayMessage
+                    ? 
+                    <h5 style={{color:'black'}}>Please provide an input for "Keywords", "Categories" or "Joke Length" to search.</h5>
+                    : null}
 
                 <Form.Group inline>
                     <Form.Button inline center secondary type="submit" size="large">Find Jokes</Form.Button>

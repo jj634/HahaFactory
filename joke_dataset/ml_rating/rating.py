@@ -47,8 +47,17 @@ pg13_maturity = [
     'murderer',
     'ass',
     'lingerie',
-    'knife'
+    'knife',
+    'hell'
 ]
+
+pg13_cats = [
+    'Bar Jokes',
+    'Sex'
+]
+
+with open('../inv_idx_cat.json') as f:
+    inv_cat = json.load(f)
 
 with open ('../inv_idx_free.json') as f: 
     inv_idx = json.load(f)
@@ -61,6 +70,9 @@ for word in pg13_maturity:
     if word in inv_idx: 
         jokes = [j[0] for j in inv_idx[word]]
         bad_jokes += jokes
+for i in range(len(inv_cat)):
+    if (inv_cat[i]['category']) in pg13_cats:
+        bad_jokes += inv_cat[i]['joke_ids']
 
 bad_jokes = list(set(bad_jokes))
 

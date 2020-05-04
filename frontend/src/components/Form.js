@@ -70,7 +70,7 @@ class JokeForm extends React.Component {
         const maturity_empty = maturity === null || maturity === ""
         const size_empty = sizes === null || sizes.length === 0
 
-        if ((search_empty && cat_empty && size_empty) && (!score_empty)) {
+        if ((search_empty && cat_empty && size_empty && maturity_empty) && (!score_empty)) {
             this.setState({
                 displayMessage: true
             })

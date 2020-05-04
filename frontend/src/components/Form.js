@@ -23,7 +23,7 @@ class JokeForm extends React.Component {
             displayMessage: false,
             isOpen: false,
         }
-        // this.advanced = React.createRef()
+        this.advanced = React.createRef()
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdvanced = this.handleAdvanced.bind(this);
     }
@@ -123,11 +123,11 @@ class JokeForm extends React.Component {
         )
     }
 
-    // focus(){
-    //     if (this.advanced.current) {
-    //         this.advanced.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    //     };
-    // }
+    focus(){
+        if (this.advanced) {
+            this.advanced.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        };
+    }
 
     handleLucky(event) {
         event.preventDefault();
@@ -146,9 +146,9 @@ class JokeForm extends React.Component {
             );
     }
 
-    // componentDidUpdate() {
-    //     this.focus()
-    // }
+    componentDidUpdate() {
+        this.focus()
+    }
 
     render() {
         const categoryList = this.createDropDownList(this.state.cat_options)
@@ -170,7 +170,7 @@ class JokeForm extends React.Component {
         const icon = this.state.isOpen ? 'chevron down' : 'chevron right'
 
         return (
-        // <div ref={this.advanced}> 
+        <div ref={this.advanced}> 
             <Form onSubmit={this.handleSubmit} size="large" key="large" >
                 <Form.Input
                     placeholder="Enter your search"
@@ -180,6 +180,7 @@ class JokeForm extends React.Component {
                     onChange={this.handleChange}
                     defaultValue={this.state.search}
                     clearable
+                    focus
                 />
                 < Accordion>
                     <Accordion.Title onClick={this.handleAdvanced}>
@@ -200,6 +201,7 @@ class JokeForm extends React.Component {
                             onChange={this.handleChange}
                             defaultValue={this.state.categories}
                             clearable
+                            focus
                         />
 
                         <Form.Group widths='equal'>
@@ -217,6 +219,10 @@ class JokeForm extends React.Component {
                                 options={maturityList}
                                 onChange={this.handleChange}
                                 defaultValue={this.state.maturity}
+                                    focus
+                                     action={{
+                                        onClick: () => this.focus()
+                                    }}
                             />
 
                             <Form.Dropdown
@@ -229,6 +235,7 @@ class JokeForm extends React.Component {
                                 options={sizeList}
                                 onChange={this.handleChange}
                                 defaultValue={this.state.sizes}
+                                focus
                             />
                         </Form.Group>
                     </div>
@@ -245,7 +252,7 @@ class JokeForm extends React.Component {
                     <Form.Button primary type="submit" size="large">I'm Feeling Funny!</Form.Button>
                 </Form.Group>
             </Form >
-        // </div>
+        </div>
         )
     }
 }

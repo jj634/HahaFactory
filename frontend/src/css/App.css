@@ -111,6 +111,10 @@ input[type=radio] {
 .info_icon:hover {
   filter: brightness(130%);
 }
+.star_hover {
+  margin-top: 7px;
+  display: inline-block;
+}
 
 .Highlight {
   background-color: #ffd54f;

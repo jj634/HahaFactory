@@ -34,7 +34,9 @@ const JokeResults = ({ jokes, query }) => {
               </Label>)}
               <div>
               <Popup content={joke.score} position='right center' trigger={
+                <h6 className="star_hover">
                   <Rating className="rating_stars" name="half-rating-read" defaultValue={joke.score} precision={0.1} readOnly />
+                </h6>
               }/>
           </div>
 

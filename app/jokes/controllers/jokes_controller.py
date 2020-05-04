@@ -46,7 +46,8 @@ def search():
     cat_options = sorted([cat.category for cat in Categories.query.all()])
 
     query = request.args.get('search') or []
-    weighting = request.args.get('score') or 0 # input values are from [0, 0.5]
+    # input values are from [0, 0.5]. default to maximum relevance
+    weighting = request.args.get('score') or 0 
     categories = request.args.getlist('categories')
     sizes = request.args.getlist('sizes')
     maturity = request.args.get('maturity') or ''
@@ -122,27 +123,15 @@ def search():
     print(query)
     if query:
         results_cos = cos.fast_cossim(query, inv_idx, idf_dict)
+        print(results_cos)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
+    # TODO: shouldnt it be if categories or any of the others
     advanced = True if categories else False
     results, cos_score, jac_score, sc_score = ressy.weight(results_jac, results_cos, weighting, advanced)
     print("WEIGHTING IS: ---------")
     str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_score, jac_score, sc_score)
     print(str_weighting)
-
-    #--------------------- SCORING ------------------------------------#
-    # Temporary: If there are no results from running jaccard + cosine, and a minimum score is provided, results normal min score filtered
-    # if not results and min_score != -1: 
-    #     jokes = Joke.query.filter(Joke.score >= min_score).all()
-    #     nonrelated_jokes = [{
-    #         "text": joke.text,
-    #         "categories": joke.categories,
-    #         "score": str(joke.score),
-    #         "maturity": joke.maturity,
-    #         "size": str(joke.size),
-    #         "similarity": str(0.16/5*float(joke.score))
-    #     } for joke in jokes]
-    #     results += nonrelated_jokes
 
     #--------------------- LENGTH ------------------------------------#
     # At end, results is filtered based on length.
@@ -159,7 +148,7 @@ def search():
                 "score": str(joke.score),
                 "maturity": str(joke.maturity),
                 "size": str(joke.size),
-                "similarity": str(1.0)
+                "similarity": str(1.0) #TODO: i think this should be related to score
             } for joke in jokes]
             results = siz.size_filter(results, sizes)
 
@@ -167,6 +156,7 @@ def search():
      # At end, results is filtered based on maturity. Retouch later.
     print("Maturity IS: ---------")
     print(maturity)
+    # TODO: i think we should allow searching by maturity. similar to length, set simscore = score/5
     if maturity:
         if maturity == 'PG-13': 
             results = [joke for joke in results if joke['maturity'] == '1' ]

@@ -25,15 +25,26 @@ def weight(jac_res, cos_res, min_score, advanced):
     jac_weight = None
     sc_weight = float(min_score) # this is relevance vs funny
 
-
-    # Change below weightings for ranking
-    if advanced:
-        cos_weight = 0.6*(1.0 - sc_weight)
-        jac_weight = 0.4*(1.0 - sc_weight)
+    if (len(jacky) == 0 and len(cos_key) == 0):
+        cos_weight = 0
+        jac_weight = 0
+    elif (len(jacky) == 0):
+        cos_weight = 1
+        jac_weight = 0
+    elif (len(cos_key) == 0):
+        cos_weight = 0
+        jac_weight = 1
     else:
-        cos_weight = 0.7*(1.0 - sc_weight)
-        jac_weight = 0.3*(1.0 - sc_weight)
+        if advanced:
+            cos_weight = 0.6
+            jac_weight = 0.4
+        else:
+            cos_weight = 0.7
+            jac_weight = 0.3
     
+    cos_weight *= (1.0 - sc_weight)
+    jac_weight *= (1.0 - sc_weight)
+
     for joke_id in jacky.union(cos_key):
         # to discuss - we are making 3 database calls for jaccard categories, this weighting, and metadata. that seems inefficient
         joke_meta = Joke.query.filter_by(id=joke_id).first()

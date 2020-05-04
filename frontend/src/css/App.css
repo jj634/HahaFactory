@@ -104,25 +104,12 @@ input[type=radio] {
 }
 
 .sim_sc_display {
-  color: white;
-  background-color: purple;
-  padding: 5px;
-  border-radius: .5rem;
   display: inline-block;
+  margin-right: 5px;
 }
 
-.sim_sc_display:hover {
+.info_icon:hover {
   filter: brightness(130%);
-}
-
-.doughnut {
-  color: purple;
-  margin-top: 7px;
-  display: inline-block;
-}
-
-.pointing {
-  color: blue;
 }
 
 .Highlight {
@@ -130,4 +117,7 @@ input[type=radio] {
   padding:0
 }
 
+.rating_stars {
+  margin-top: 5px;
+}
 

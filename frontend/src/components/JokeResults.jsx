@@ -1,7 +1,7 @@
 // adapted from: https://pusher.com/tutorials/consume-restful-api-react
 
 import React from 'react'
-import { Icon, Label, Popup, Button } from 'semantic-ui-react'
+import { Icon, Label, Popup} from 'semantic-ui-react'
 import Highlighter from "react-highlight-words";
 import Rating from '@material-ui/lab/Rating';
 import { Doughnut } from 'react-chartjs-2';

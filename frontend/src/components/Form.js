@@ -21,7 +21,8 @@ class JokeForm extends React.Component {
             maturity: this.props.maturity || '',
 
             displayMessage: false, 
-            isOpen: false
+            isOpen: false, 
+            random: ''
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdvanced= this.handleAdvanced.bind(this);
@@ -110,6 +111,23 @@ class JokeForm extends React.Component {
                 value: element
             })
         )
+    }
+
+    handleLucky(event){
+        event.preventDefault();
+        axios({
+            method: 'GET',
+            // url: `/api/cat-options`,
+            url: `http://localhost:5000/api/random`,
+        })
+            .then((response) => {
+                this.setState({
+                    random: response.data.joke,
+                })
+            })
+            .catch(err =>
+                console.log(err)
+            );
     }
 
     render() {

@@ -149,7 +149,7 @@ def search():
                 "score": str(joke.score),
                 "maturity": str(joke.maturity),
                 "size": str(joke.size), 
-                "similarity": str(joke.score/5),
+                "similarity": str(1),
                 "rand": str(random.random())
             } for joke in jokes]
             results = siz.size_filter(results, sizes)
@@ -173,7 +173,7 @@ def search():
                     'score': str(j.score),
                     'maturity': str(j.maturity),
                     'size': str(j.size),
-                    'similarity': str(j.score/5),
+                    'similarity': str(1),
                     'rand': str(random.random())
                 } for j in jokes if j.maturity == 1
             ]

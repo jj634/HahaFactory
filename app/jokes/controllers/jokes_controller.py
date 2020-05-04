@@ -142,8 +142,6 @@ def search():
             results = siz.size_filter(results, sizes)
         else: 
             jokes = Joke.query.all()
-            print("MATURITY IS: ")
-            print(jokes[0].maturity)
             results = [{
                 "text": joke.text,
                 "categories": joke.categories,

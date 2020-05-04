@@ -16,7 +16,6 @@ const JokeResults = ({ jokes, query }) => {
   }
   return (
     <React.Fragment>
-      <center><h2>Jokes</h2></center>
       {jokes.map((joke, index) => (
         (index <= 20) ?
         <div>

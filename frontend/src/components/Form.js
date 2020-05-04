@@ -22,14 +22,14 @@ class JokeForm extends React.Component {
 
             displayMessage: false,
             isOpen: false,
-            random: ''
         }
+        // this.advanced = React.createRef()
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdvanced = this.handleAdvanced.bind(this);
     }
 
     componentDidMount() {
-        const { categories, score, sizes, maturity } = this.state
+        const { categories, score, sizes, maturity, search } = this.props
         const cat_empty = categories === null || categories.length === 0
         const score_empty = score === null || score === ""
         const maturity_empty = maturity === null || maturity === ""
@@ -46,7 +46,12 @@ class JokeForm extends React.Component {
                 this.setState({
                     cat_options: response.data.categories,
                     isLoaded: true,
-                    isOpen: open
+                    isOpen: open,
+                    categories: categories,
+                    score: score, 
+                    sizes: sizes,
+                    maturity: maturity,
+                    search: search
                 })
             })
             .catch(err =>
@@ -74,7 +79,12 @@ class JokeForm extends React.Component {
             this.setState({
                 displayMessage: true
             })
-        } else {
+        } else if ((search_empty && cat_empty && size_empty && maturity_empty && score_empty)) {
+            this.setState({
+                displayMessage: true
+            })
+        }
+        else {
             if (!search_empty) params.append("search", search)
             if (!cat_empty) {
                 categories.forEach(cat => {
@@ -113,6 +123,12 @@ class JokeForm extends React.Component {
         )
     }
 
+    // focus(){
+    //     if (this.advanced.current) {
+    //         this.advanced.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    //     };
+    // }
+
     handleLucky(event) {
         event.preventDefault();
         axios({
@@ -130,13 +146,17 @@ class JokeForm extends React.Component {
             );
     }
 
+    // componentDidUpdate() {
+    //     this.focus()
+    // }
+
     render() {
         const categoryList = this.createDropDownList(this.state.cat_options)
         const sizeList = this.createDropDownList(sizes)
         const maturityList = this.createDropDownList(maturities)
 
         const slider_settings = {
-            start: this.props.score || 0.25,
+            start: this.state.score || 0.25,
             min: 0,
             max: 0.5,
             step: 0.125,
@@ -150,14 +170,15 @@ class JokeForm extends React.Component {
         const icon = this.state.isOpen ? 'chevron down' : 'chevron right'
 
         return (
-            <Form onSubmit={this.handleSubmit} size="large" key="large">
+        // <div ref={this.advanced}> 
+            <Form onSubmit={this.handleSubmit} size="large" key="large" >
                 <Form.Input
                     placeholder="Enter your search"
                     name="search"
                     label="Keywords"
                     type="text"
                     onChange={this.handleChange}
-                    defaultValue={this.props.search}
+                    defaultValue={this.state.search}
                     clearable
                 />
                 < Accordion>
@@ -177,7 +198,7 @@ class JokeForm extends React.Component {
                             selection
                             options={categoryList}
                             onChange={this.handleChange}
-                            defaultValue={this.props.categories}
+                            defaultValue={this.state.categories}
                             clearable
                         />
 
@@ -195,7 +216,7 @@ class JokeForm extends React.Component {
                                 clearable
                                 options={maturityList}
                                 onChange={this.handleChange}
-                                defaultValue={this.props.maturity}
+                                defaultValue={this.state.maturity}
                             />
 
                             <Form.Dropdown
@@ -207,7 +228,7 @@ class JokeForm extends React.Component {
                                 multiple
                                 options={sizeList}
                                 onChange={this.handleChange}
-                                defaultValue={this.props.sizes}
+                                defaultValue={this.state.sizes}
                             />
                         </Form.Group>
                     </div>
@@ -215,7 +236,7 @@ class JokeForm extends React.Component {
                 }
                 {this.state.displayMessage
                     ?
-                    <h5 style={{ color: 'black' }}>Please provide an input for "Keywords", "Categories" or "Joke Length" to search.</h5>
+                    <h5 style={{ color: 'black' }}>Please provide an input for "Keywords", "Categories", "Maturity" or "Joke Length" to search.</h5>
                     : null
                 }
 
@@ -224,7 +245,7 @@ class JokeForm extends React.Component {
                     <Form.Button primary type="submit" size="large">I'm Feeling Funny!</Form.Button>
                 </Form.Group>
             </Form >
-
+        // </div>
         )
     }
 }

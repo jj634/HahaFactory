@@ -6,6 +6,7 @@ import { Form, Accordion, Icon } from 'semantic-ui-react'
 import { Slider } from "react-semantic-ui-range";
 import sizes from '../images/size';
 import maturities from '../images/maturity'
+import random from '../images/random'
 
 class JokeForm extends React.Component {
     constructor(props) {
@@ -26,17 +27,24 @@ class JokeForm extends React.Component {
         this.advanced = React.createRef()
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleAdvanced = this.handleAdvanced.bind(this);
+        this.handleLucky = this.handleLucky.bind(this);
     }
 
-    componentDidMount() {
-        const { categories, score, sizes, maturity, search } = this.props
+    isOpen(){
+        const { categories, score, sizes, maturity} = this.props
         const cat_empty = categories === null || categories.length === 0
         const score_empty = score === null || score === ""
         const maturity_empty = maturity === null || maturity === ""
         const size_empty = sizes === null || sizes.length === 0
 
         const open = !cat_empty || !score_empty || !maturity_empty || !size_empty
+        this.setState({
+            isOpen: open
+        })
+    }
 
+    componentDidMount() {
+        const { categories, score, sizes, maturity, search } = this.props
         axios({
             method: 'GET',
             // url: `/api/cat-options`,
@@ -46,7 +54,6 @@ class JokeForm extends React.Component {
                 this.setState({
                     cat_options: response.data.categories,
                     isLoaded: true,
-                    isOpen: open,
                     categories: categories,
                     score: score, 
                     sizes: sizes,
@@ -57,6 +64,7 @@ class JokeForm extends React.Component {
             .catch(err =>
                 console.log(err)
             );
+        this.isOpen();
     }
 
     handleChange = (e, { name, value }) => {
@@ -131,19 +139,26 @@ class JokeForm extends React.Component {
 
     handleLucky(event) {
         event.preventDefault();
-        axios({
-            method: 'GET',
-            // url: `/api/cat-options`,
-            url: `http://localhost:5000/api/random`,
+        const cat_options = this.state.cat_options.map((cat) => (
+            {
+                "categories": [cat]
+            }
+        ))
+
+        const random_inputs= random.concat(cat_options)
+        var item = random_inputs[Math.floor(Math.random() * random_inputs.length)];
+
+        const cat = item.categories || [] 
+        const search = item.search || ''
+        const sizes = item.sizes || []
+        const maturity = item.maturity || ''
+        this.setState({
+            categories: cat,
+            search: search,
+            sizes: sizes,
+            maturity:maturity,
+            isOpen: true
         })
-            .then((response) => {
-                this.setState({
-                    jokes: response.data.jokes,
-                })
-            })
-            .catch(err =>
-                console.log(err)
-            );
     }
 
     componentDidUpdate() {
@@ -178,7 +193,7 @@ class JokeForm extends React.Component {
                     label="Keywords"
                     type="text"
                     onChange={this.handleChange}
-                    defaultValue={this.state.search}
+                    value = {this.state.search}
                     clearable
                     focus
                 />
@@ -199,7 +214,7 @@ class JokeForm extends React.Component {
                             selection
                             options={categoryList}
                             onChange={this.handleChange}
-                            defaultValue={this.state.categories}
+                            value = {this.state.categories}
                             clearable
                             focus
                         />
@@ -218,11 +233,7 @@ class JokeForm extends React.Component {
                                 clearable
                                 options={maturityList}
                                 onChange={this.handleChange}
-                                defaultValue={this.state.maturity}
-                                    focus
-                                     action={{
-                                        onClick: () => this.focus()
-                                    }}
+                                value = {this.state.maturity}
                             />
 
                             <Form.Dropdown
@@ -234,7 +245,7 @@ class JokeForm extends React.Component {
                                 multiple
                                 options={sizeList}
                                 onChange={this.handleChange}
-                                defaultValue={this.state.sizes}
+                                value = {this.state.sizes}
                                 focus
                             />
                         </Form.Group>
@@ -249,7 +260,7 @@ class JokeForm extends React.Component {
 
                 <Form.Group inline style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <Form.Button secondary type="submit" size="large">Find Jokes</Form.Button>
-                    <Form.Button primary type="submit" size="large">I'm Feeling Funny!</Form.Button>
+                    <Form.Button primary size="large"onClick = {this.handleLucky} >I'm Feeling Funny!</Form.Button>
                 </Form.Group>
             </Form >
         </div>

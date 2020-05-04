@@ -125,7 +125,6 @@ def search():
     print(query)
     if query:
         results_cos = cos.fast_cossim(query, inv_idx, idf_dict)
-        print(results_cos)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     advanced = True if (categories or weighting or sizes or maturity) else False

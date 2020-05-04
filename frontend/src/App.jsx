@@ -65,7 +65,7 @@ class App extends React.Component {
           score: score_param,
           search: search_param,
           sizes: size_param,
-          maturity: maturity_param
+          maturity: maturity_param,
         })
       })
       .catch(err =>

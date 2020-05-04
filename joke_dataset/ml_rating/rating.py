@@ -48,7 +48,11 @@ pg13_maturity = [
     'ass',
     'lingerie',
     'knife',
-    'hell'
+    'hell',
+    'horny',
+    'handjobs',
+    'handjob',
+    
 ]
 
 pg13_cats = [

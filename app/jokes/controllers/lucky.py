@@ -1,11 +1,24 @@
 from . import *
 from random import randint
 
+N_JOKES = 5932
 
 @jokes.route('/random', methods=['GET'])
-def generate_random_joke(category):
-    joke_lst = (Categories.query.filter_by(category = category).first()).joke_ids
-    rand_joke_id = joke_lst[randint(0, len(joke_lst)-1)]
-    joke = Joke.query.filter_by(id = rand_joke_id).first()
-    joke_obj =  {'text': joke.text, 'categories': joke.categories, 'score': str(joke.score), 'maturity': str(joke.maturity), 'size': str(joke.size)}
-    return {"joke": joke_obj}
+def generate_random_joke():
+    """
+    Returns: A random joke
+    TODO: should we populate form fields with the joke's info?
+    TODO: should we select from preset keyword, category, maturity, length options?
+    """
+    
+    joke_meta = Joke.query.filter_by(id=randint(1, N_JOKES)).first()
+
+    joke_obj = {
+        "text": joke_meta.text,
+        "categories": joke_meta.categories,
+        "score": str(joke_meta.score),
+        "maturity": str(joke_meta.maturity),
+        "size": str(joke_meta.size),
+    }
+
+    return {"jokes": joke_obj}

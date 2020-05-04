@@ -122,7 +122,7 @@ class JokeForm extends React.Component {
         })
             .then((response) => {
                 this.setState({
-                    random: response.data.joke,
+                    jokes: response.data.jokes,
                 })
             })
             .catch(err =>

@@ -29,7 +29,8 @@ def extract_joke(id):
     # 1. replace \n with space
     # 2. get rid of \ (not actually tho do it manually)
     # 3. replace email protected with @
-    p1 = " ".join(strgood.split("\n")[2:-2])
+    p0 = "".join(strgood[strgood.index(">")+1:])
+    p1 = " ".join(p0.split("\n"))
     p2 = "$@".join(re.split('<a class=\"__cf_email__\".*?<\/a>',p1))
 
     end = "".join(p2.split("</li><p></p> </ul>"))

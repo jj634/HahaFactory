@@ -6,3 +6,4 @@ jokes = Blueprint('jokes', __name__, url_prefix='/api')
 
 # Import all controllers
 from .controllers.jokes_controller import *     
+from .controllers.lucky import *

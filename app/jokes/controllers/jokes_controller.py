@@ -4,6 +4,7 @@ from . import cos_sim as cos
 from . import cat_jaccard as jac
 from . import output_res as ressy
 from . import sizing as siz
+from . import lucky as lk
 from . import *
 
 @jokes.route('/jokes', methods=['GET', 'POST'])
@@ -127,7 +128,7 @@ def search():
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     # TODO: shouldnt it be if categories or any of the others
-    advanced = True if categories else False
+    advanced = True if (categories or weighting or sizes or maturity) else False
     results, cos_score, jac_score, sc_score = ressy.weight(results_jac, results_cos, weighting, advanced)
     print("WEIGHTING IS: ---------")
     str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_score, jac_score, sc_score)
@@ -148,7 +149,11 @@ def search():
                 "score": str(joke.score),
                 "maturity": str(joke.maturity),
                 "size": str(joke.size),
-                "similarity": str(1.0) #TODO: i think this should be related to score
+                # TODO: Something to consider - if we allow jokes to be displayed using
+                # solely "advanced" fields, we're implying some types of results are
+                # impossible using the "basic" field. But, I'm fine with either way because
+                # it doesn't really matter. 
+                "similarity": str(joke.score/5) #TODO: i think this should be related to score
             } for joke in jokes]
             results = siz.size_filter(results, sizes)
 

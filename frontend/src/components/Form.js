@@ -20,23 +20,23 @@ class JokeForm extends React.Component {
             sizes: this.props.sizes || [],
             maturity: this.props.maturity || '',
 
-            displayMessage: false, 
-            isOpen: false, 
+            displayMessage: false,
+            isOpen: false,
             random: ''
         }
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleAdvanced= this.handleAdvanced.bind(this);
+        this.handleAdvanced = this.handleAdvanced.bind(this);
     }
 
     componentDidMount() {
-        const {categories, score, sizes, maturity } = this.state
+        const { categories, score, sizes, maturity } = this.state
         const cat_empty = categories === null || categories.length === 0
         const score_empty = score === null || score === ""
         const maturity_empty = maturity === null || maturity === ""
         const size_empty = sizes === null || sizes.length === 0
 
         const open = !cat_empty || !score_empty || !maturity_empty || !size_empty
-        
+
         axios({
             method: 'GET',
             // url: `/api/cat-options`,
@@ -46,7 +46,7 @@ class JokeForm extends React.Component {
                 this.setState({
                     cat_options: response.data.categories,
                     isLoaded: true,
-                    isOpen:open
+                    isOpen: open
                 })
             })
             .catch(err =>
@@ -60,7 +60,7 @@ class JokeForm extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        const { search, categories, score, sizes, maturity} = this.state
+        const { search, categories, score, sizes, maturity } = this.state
 
         const params = new URLSearchParams()
 
@@ -70,7 +70,7 @@ class JokeForm extends React.Component {
         const maturity_empty = maturity === null || maturity === ""
         const size_empty = sizes === null || sizes.length === 0
 
-        if ((search_empty && cat_empty && size_empty) && (!score_empty || !maturity_empty)) {
+        if ((search_empty && cat_empty && size_empty) && (!score_empty)) {
             this.setState({
                 displayMessage: true
             })
@@ -97,7 +97,7 @@ class JokeForm extends React.Component {
         }
     }
 
-    handleAdvanced= (e, titleProps) => {
+    handleAdvanced = (e, titleProps) => {
         const { isOpen } = this.state
         const newActive = !isOpen
         this.setState({ isOpen: newActive })
@@ -113,7 +113,7 @@ class JokeForm extends React.Component {
         )
     }
 
-    handleLucky(event){
+    handleLucky(event) {
         event.preventDefault();
         axios({
             method: 'GET',
@@ -148,7 +148,7 @@ class JokeForm extends React.Component {
         };
 
         const icon = this.state.isOpen ? 'chevron down' : 'chevron right'
-        
+
         return (
             <Form onSubmit={this.handleSubmit} size="large" key="large">
                 <Form.Input
@@ -160,12 +160,12 @@ class JokeForm extends React.Component {
                     defaultValue={this.props.search}
                     clearable
                 />
-                < Accordion> 
+                < Accordion>
                     <Accordion.Title onClick={this.handleAdvanced}>
-                        <Icon name={icon}/>Advanced Search
+                        <Icon name={icon} />Advanced Search
                     </Accordion.Title>
                 </Accordion>
-                {this.state.isOpen  
+                {this.state.isOpen
                     ? <div>
                         < Form.Dropdown
                             closeOnChange
@@ -210,8 +210,8 @@ class JokeForm extends React.Component {
                                 defaultValue={this.props.sizes}
                             />
                         </Form.Group>
-                    </div> 
-                    : null 
+                    </div>
+                    : null
                 }
                 {this.state.displayMessage
                     ?
@@ -220,7 +220,7 @@ class JokeForm extends React.Component {
                 }
 
                 <Form.Group inline style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Form.Button  secondary type="submit" size="large">Find Jokes</Form.Button>
+                    <Form.Button secondary type="submit" size="large">Find Jokes</Form.Button>
                     <Form.Button primary type="submit" size="large">I'm Feeling Funny!</Form.Button>
                 </Form.Group>
             </Form >

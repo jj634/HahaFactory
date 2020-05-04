@@ -127,7 +127,6 @@ def search():
         print(results_cos)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
-    # TODO: shouldnt it be if categories or any of the others
     advanced = True if (categories or weighting or sizes or maturity) else False
     results, cos_score, jac_score, sc_score = ressy.weight(results_jac, results_cos, weighting, advanced)
     print("WEIGHTING IS: ---------")
@@ -143,17 +142,15 @@ def search():
             results = siz.size_filter(results, sizes)
         else: 
             jokes = Joke.query.all()
+            print("MATURITY IS: ")
+            print(jokes[0].maturity)
             results = [{
                 "text": joke.text,
                 "categories": joke.categories,
                 "score": str(joke.score),
                 "maturity": str(joke.maturity),
-                "size": str(joke.size),
-                # TODO: Something to consider - if we allow jokes to be displayed using
-                # solely "advanced" fields, we're implying some types of results are
-                # impossible using the "basic" field. But, I'm fine with either way because
-                # it doesn't really matter. 
-                "similarity": str(joke.score/5) #TODO: i think this should be related to score
+                "size": str(joke.size), 
+                "similarity": str(joke.score/5)
             } for joke in jokes]
             results = siz.size_filter(results, sizes)
 
@@ -161,12 +158,24 @@ def search():
      # At end, results is filtered based on maturity. Retouch later.
     print("Maturity IS: ---------")
     print(maturity)
-    # TODO: i think we should allow searching by maturity. similar to length, set simscore = score/5
     if maturity:
-        if maturity == 'PG-13': 
-            results = [joke for joke in results if joke['maturity'] == '1' ]
-        if maturity == 'PG':
-            results = [joke for joke in results if joke['maturity'] == "None"] 
+        if results:
+            if maturity == 'PG-13': 
+                results = [joke for joke in results if joke['maturity'] == '1' ]
+            if maturity == 'PG':
+                results = [joke for joke in results if joke['maturity'] == "None"] 
+        else:
+            jokes = Joke.query.all()
+            results = [
+                {
+                    'text': j.text,
+                    'categories': j.categories,
+                    'score': str(j.score),
+                    'maturity': str(j.maturity),
+                    'size': str(j.size),
+                    'similarity': str(j.score/5)
+                } for j in jokes if j.maturity == 1
+            ]
 
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim

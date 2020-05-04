@@ -77,7 +77,7 @@ def special_weighting(jokes, min_score):
         joke_weight = (1-min_weight)
         for i in range(len(jokes)):
             curr_rand = float(results[i]['rand'])
-            curr_score = float(results[i]['score'])
+            curr_score = float(results[i]['score'])/5
             results[i]['rand'] = str(curr_rand*joke_weight + curr_score*min_weight)
     return jokes
 

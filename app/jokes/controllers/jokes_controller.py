@@ -5,6 +5,7 @@ from . import cat_jaccard as jac
 from . import output_res as ressy
 from . import sizing as siz
 from . import lucky as lk
+import random
 from . import *
 
 @jokes.route('/jokes', methods=['GET', 'POST'])
@@ -128,9 +129,9 @@ def search():
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     advanced = True if (categories or weighting or sizes or maturity) else False
-    results, cos_score, jac_score, sc_score = ressy.weight(results_jac, results_cos, weighting, advanced)
+    results, cos_weight, jac_weight, sc_weight = ressy.weight(results_jac, results_cos, weighting, advanced)
     print("WEIGHTING IS: ---------")
-    str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_score, jac_score, sc_score)
+    str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_weight, jac_weight, sc_weight)
     print(str_weighting)
 
     #--------------------- LENGTH ------------------------------------#
@@ -148,7 +149,8 @@ def search():
                 "score": str(joke.score),
                 "maturity": str(joke.maturity),
                 "size": str(joke.size), 
-                "similarity": str(joke.score/5)
+                "similarity": str(joke.score/5),
+                "rand": str(random.random())
             } for joke in jokes]
             results = siz.size_filter(results, sizes)
 
@@ -171,20 +173,25 @@ def search():
                     'score': str(j.score),
                     'maturity': str(j.maturity),
                     'size': str(j.size),
-                    'similarity': str(j.score/5)
+                    'similarity': str(j.score/5),
+                    'rand': str(random.random())
                 } for j in jokes if j.maturity == 1
             ]
 
     #--------------------- SORTING ---------------------#
     # sort results by decreasing sim
-    results = sorted(results, key=lambda x: (x["similarity"]), reverse=True)
+    if (query or categories_list):
+        results = sorted(results, key=lambda x: (x["similarity"]), reverse=True)
+    else:
+        results = ressy.special_weighting(results, float(weighting))
+        results = sorted(results, key=lambda x: (x['rand']), reverse=True)
 
     typo_string = " ".join(query)
     if typo:
         print("TYPO EXISTS- New string below: -------------")
         print(typo_string)
 
-    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_score, "jaccard": jac_score, "score": sc_score, "query" : query}
+    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight, "query" : query}
 
 
 @jokes.route('/cat-options', methods=['GET'])

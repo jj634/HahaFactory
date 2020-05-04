@@ -14,7 +14,7 @@ import Form from './components/Form'
 import JokeResults from './components/JokeResults';
 
 import { Row, Col } from 'react-bootstrap'
-import { Dimmer, Loader, Container } from 'semantic-ui-react'
+import { Dimmer, Loader, Container, Button } from 'semantic-ui-react'
 
 class App extends React.Component {
   constructor(props) {
@@ -101,6 +101,11 @@ class App extends React.Component {
         <Container>
           <Row className="justify-content-md-center">
             <Col>
+
+              <div inline >
+                <Button style={{ margin: '10px' }} onClick={ () => window.open("http://hahafactory-og.herokuapp.com/", "_blank")}> First Prototype </Button>
+                <Button style={{ margin: '10px' }} onClick={() => window.open("http://hahafactory-v2.herokuapp.com/", "_blank")}> Second Prototype </Button>
+              </div>
               <header className="App-header">
                 <h1>HahaFactory:</h1>
                 <h2>Finding Hilarious Jokes for You</h2>

@@ -98,7 +98,7 @@ class JokeForm extends React.Component {
 
     handleAdvanced= (e, titleProps) => {
         const { isOpen } = this.state
-        const newActive = true ? !isOpen : false
+        const newActive = !isOpen
         this.setState({ isOpen: newActive })
     }
 
@@ -129,6 +129,8 @@ class JokeForm extends React.Component {
             }
         };
 
+        const icon = this.state.isOpen ? 'chevron down' : 'chevron right'
+        
         return (
             <Form onSubmit={this.handleSubmit} size="large" key="large">
                 <Form.Input
@@ -142,7 +144,7 @@ class JokeForm extends React.Component {
                 />
                 < Accordion> 
                     <Accordion.Title onClick={this.handleAdvanced}>
-                        <h4><Icon name='dropdown' />Advanced Search</h4>
+                        <Icon name={icon}/>Advanced Search
                     </Accordion.Title>
                 </Accordion>
                 {this.state.isOpen  

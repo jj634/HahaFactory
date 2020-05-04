@@ -69,6 +69,18 @@ def weight(jac_res, cos_res, min_score, advanced):
                     })
     return results, cos_weight, jac_weight, sc_weight
 
+
+def special_weighting(jokes, min_score):
+    results = jokes
+    if min_score:
+        min_weight = min_score*2
+        joke_weight = (1-min_weight)
+        for i in range(len(jokes)):
+            curr_rand = float(results[i]['rand'])
+            curr_score = float(results[i]['score'])
+            results[i]['rand'] = str(curr_rand*joke_weight + curr_score*min_weight)
+    return jokes
+
 def adj_minscore(min_score, results):
     """
     Combine results from jaccard and cosine similarity

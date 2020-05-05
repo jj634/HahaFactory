@@ -71,10 +71,7 @@ class JokeForm extends React.Component {
         this.setState({ [name]: value })
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
-        const { search, categories, score, sizes, maturity } = this.state
-
+    tonewURL= (search, categories, score, sizes, maturity)  => {
         const params = new URLSearchParams()
 
         const search_empty = search === null || search === ""
@@ -115,6 +112,12 @@ class JokeForm extends React.Component {
         }
     }
 
+    handleSubmit(event) {
+        event.preventDefault();
+        const { search, categories, score, sizes, maturity } = this.state
+        this.tonewURL(search, categories, score, sizes, maturity)
+    }
+
     handleAdvanced = (e, titleProps) => {
         const { isOpen } = this.state
         const newActive = !isOpen
@@ -152,13 +155,7 @@ class JokeForm extends React.Component {
         const search = item.search || ''
         const sizes = item.sizes || []
         const maturity = item.maturity || ''
-        this.setState({
-            categories: cat,
-            search: search,
-            sizes: sizes,
-            maturity:maturity,
-            isOpen: true
-        })
+        this.tonewURL(search, cat, 0.25, sizes, maturity)
     }
 
     componentDidUpdate() {

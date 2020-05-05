@@ -182,7 +182,8 @@ class JokeForm extends React.Component {
         const icon = this.state.isOpen ? 'chevron down' : 'chevron right'
 
         return (
-        <div ref={this.advanced}> 
+        <div ref={this.advanced}>
+            <br/>
             <Form onSubmit={this.handleSubmit} size="large" key="large" >
                 <Form.Input
                     placeholder="Enter your search"

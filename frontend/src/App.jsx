@@ -49,8 +49,8 @@ class App extends React.Component {
 
     axios({
       method: 'GET',
-      // url: `/api/search`,
-      url: `http://localhost:5000/api/search`,
+      url: `/api/search`,
+      // url: `http://localhost:5000/api/search`,
       params: URLParams
     })
       .then((response) => {

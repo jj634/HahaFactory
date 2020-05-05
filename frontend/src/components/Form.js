@@ -47,8 +47,8 @@ class JokeForm extends React.Component {
         const { categories, score, sizes, maturity, search } = this.props
         axios({
             method: 'GET',
-            // url: `/api/cat-options`,
-            url: `http://localhost:5000/api/cat-options`,
+            url: `/api/cat-options`,
+            // url: `http://localhost:5000/api/cat-options`,
         })
             .then((response) => {
                 this.setState({

@@ -103,6 +103,7 @@ class App extends React.Component {
           <Button style={{ margin: '10px' }} onClick={() => window.open("http://hahafactory-og.herokuapp.com/", "_blank")}> First Prototype </Button>
           <Button style={{ margin: '10px' }} onClick={() => window.open("http://hahafactory-v2.herokuapp.com/", "_blank")}> Second Prototype </Button>
         </div>
+          <div style={{ alignItems: 'center', justify: 'center', maxWidth: '50%', left: '25%', position: 'absolute' }}>
         <Container>
           <Row className="justify-content-md-center">
             <Col>
@@ -112,7 +113,7 @@ class App extends React.Component {
                 <img src={logo} className="App-logo" alt="logo" />
               </header>
 
-              <Form score={this.state.score} categories={this.state.categories} search={this.state.search} sizes={this.state.sizes} maturity={this.state.maturity} />
+                <Form score={this.state.score} categories={this.state.categories} search={this.state.search} sizes={this.state.sizes} maturity={this.state.maturity} />
 
             </Col>
           </Row>
@@ -132,6 +133,7 @@ class App extends React.Component {
               <JokeResults jokes={this.state.jokes} query={this.state.query} />           </Col>
           </Row>
         </Container >
+          </div> 
         </div>
       )
     }

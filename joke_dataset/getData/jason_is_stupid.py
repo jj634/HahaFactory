@@ -3,6 +3,7 @@ from lxml.cssselect import CSSSelector
 import requests
 import json
 import re
+import bs4
 
 cat_regex = re.compile('(?<=Category: )(.*[A-z])')
 scr_regex = re.compile("(?<=Rating: )(.*\d)")
@@ -27,21 +28,43 @@ def extract_joke(id):
     strgood = str(good)
 
     # 1. replace \n with space
-    # 2. get rid of \ (not actually tho do it manually)
+    # 2. get rid of \
     # 3. replace email protected with @
-    p0 = "".join(strgood[strgood.index(">")+1:])
-    p1 = " ".join(p0.split("\n"))
+    content = strgood[strgood.index(">")+1:strgood.index("</td>")]
+
+
+    p1 = " ".join(content.split("\n"))
     p2 = "$@".join(re.split('<a class=\"__cf_email__\".*?<\/a>',p1))
 
-    end = "".join(p2.split("</li><p></p> </ul>"))
-    nobr = "\n".join(end.split("<br/>"))
-    noli = "\n".join(nobr.split("</li>"))
-    nop = "\n".join(noli.split("<p>"))
-    noul = "".join(nop.split("<ul>"))
-    nolid = "".join(noul.split("<li>"))
-    nopd = "".join(nolid.split("</p>"))
+    # remove list starter and header
 
-    res['joke'] = nopd
+    full_text=p2
+    ul_ind = p2.find("<ul>")
+    # is a list
+    if ul_ind != -1:
+        acc = p2[:ul_ind]
+        rest = p2[ul_ind+4:]
+
+        rest_bulleted = " - ".join(rest.split("<li>"))
+        rest_separated = "\n".join(rest_bulleted.split("</li>"))
+
+        nould = "\n".join(rest_separated.split("</ul>"))
+
+        full_text = acc+"\n"+nould
+
+
+
+    full_text = "\n\n".join(full_text.split("<p>"))
+    full_text = "".join(full_text.split("</p>"))
+    full_text = "\n".join(full_text.split("<br/>"))
+
+
+    # replacing weird \n's
+    final = " ".join(re.split('\s*\\n\s*(?=[a-z])',full_text))
+    final1 = "\n".join(re.split(' +\\n +|\\n +| +\\n',final))
+
+
+    res['joke'] = final1.strip()
     
 
     for cat in sel_cat(html_elmnts):
@@ -64,6 +87,5 @@ try:
         jokes.append(extract_joke(i))
 
 finally:
-    # not actually tho change this directory if you want to waste 20 mins of ur life
-    with open('./test.json', 'w') as file: 
+    with open('../json/raw/jasons_cool_json_2.json', 'w') as file:
         json.dump(jokes, file, indent=4)

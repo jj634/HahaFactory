@@ -98,14 +98,14 @@ class App extends React.Component {
   render() {
     if (this.state.isLoaded) {
       return (
+        <div>
+        <div inline >
+          <Button style={{ margin: '10px' }} onClick={() => window.open("http://hahafactory-og.herokuapp.com/", "_blank")}> First Prototype </Button>
+          <Button style={{ margin: '10px' }} onClick={() => window.open("http://hahafactory-v2.herokuapp.com/", "_blank")}> Second Prototype </Button>
+        </div>
         <Container>
           <Row className="justify-content-md-center">
             <Col>
-
-              <div inline >
-                <Button style={{ margin: '10px' }} onClick={ () => window.open("http://hahafactory-og.herokuapp.com/", "_blank")}> First Prototype </Button>
-                <Button style={{ margin: '10px' }} onClick={() => window.open("http://hahafactory-v2.herokuapp.com/", "_blank")}> Second Prototype </Button>
-              </div>
               <header className="App-header">
                 <h1>HahaFactory:</h1>
                 <h2>Finding Hilarious Jokes for You</h2>
@@ -132,6 +132,7 @@ class App extends React.Component {
               <JokeResults jokes={this.state.jokes} query={this.state.query} />           </Col>
           </Row>
         </Container >
+        </div>
       )
     }
     else return (

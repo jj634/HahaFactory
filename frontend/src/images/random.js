@@ -1,12 +1,12 @@
 const randomjokes = [
     {
         "categories": [
-            "Pick-Up Line", "Biology"
+            "Pick-up Line", "Biology"
         ],
     },
     {
         "categories": [
-            "Pick-Up Line", "Pun"
+            "Pick-up Line", "Pun"
         ],
     },
     {
@@ -27,25 +27,25 @@ const randomjokes = [
         "categories":[
             "Pun", "Dad Jokes"
         ],
-        "maturty": "PG-13"
+        "maturity": "PG-13"
     },
     {
         "categories": [
             "Pun", "Dad Jokes"
         ],
-        "maturty": "PG-13"
+        "maturity": "PG-13"
     },
     {
         "categories": [
             "Pun"
         ],
-        "maturty": "PG-13"
+        "maturity": "PG-13"
     },
     {
         "categories": [
             "Pun"
         ],
-        "maturty": "PG-13"
+        "maturity": "PG-13"
     },
     {
         "search": "math",
@@ -57,19 +57,19 @@ const randomjokes = [
         "categories": [
             "Yo Mama"
         ],
-        "maturty": "PG-13"
+        "maturity": "PG-13"
     },
     {
         "categories": [
             "Yo Mama"
         ],
-        "maturty": "PG"
+        "maturity": "PG"
     },
     {   
         "categories": [
             "Yo Mama"
         ],
-        "maturty": "PG"
+        "maturity": "PG"
     }
 ]
 

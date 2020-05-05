@@ -187,7 +187,6 @@ class JokeForm extends React.Component {
                 <Form.Input
                     placeholder="Enter your search"
                     name="search"
-                    label="Keywords"
                     type="text"
                     onChange={this.handleChange}
                     value = {this.state.search}

@@ -13,7 +13,7 @@ const randomjokes = [
         "search" : "bar"
     },
     {
-        "size": [
+        "sizes": [
             "One-Liner"
         ],
     },
@@ -48,8 +48,8 @@ const randomjokes = [
         "maturty": "PG-13"
     },
     {
-        "query": "math",
-        "size": [
+        "search": "math",
+        "sizes": [
             "Short"
         ],
     },

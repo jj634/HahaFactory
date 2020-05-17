@@ -43,6 +43,9 @@ with open('./inv_idx_free.json') as f:
 with open('./idf_dict.json') as f:
     idf_dict = json.load(f)
 
+with open('./cache.json') as f:
+    cache = json.load(f)
+
 @jokes.route('/search', methods=['GET'])
 def search():
     cat_options = sorted([cat.category for cat in Categories.query.all()])
@@ -98,6 +101,9 @@ def search():
 
     categories_list = categories + p_cats
     categories_list = list(set(categories_list))
+
+    if (str(query)+str(categories_list)+str(weighting)+str(sizes)+str(maturity)) in cache:
+        return cache[str(query)+str(categories_list)+str(weighting)+str(sizes)+str(maturity)]
 
     #--------------------- JACCARD ---------------------#
     # dictionary key = joke_id, value = (joke_dict, jac_sim)
@@ -200,7 +206,11 @@ def search():
         print("TYPO EXISTS- New string below: -------------")
         print(typo_string)
 
-    return {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight, "query" : query}
+    cache[str(query)+str(categories_list)+str(weighting)+str(sizes)+str(maturity)] = {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight, "query" : query}
+    with open('./cache.json', 'w') as f:
+        json.dump(cache, f)
+
+    return cache[str(query)+str(categories_list)+str(weighting)+str(sizes)+str(maturity)]
 
 
 @jokes.route('/cat-options', methods=['GET'])

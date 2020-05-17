@@ -98,6 +98,7 @@ def search():
     #--------------------- JACCARD ---------------------#
     # dictionary key = joke_id, value = (joke_dict, jac_sim)
     results_jac = {}
+    rel_jokes_meta = {} # dictionary where key = joke_id, value = joke
     print("CATEGORIES ARE: --------")
     print(categories_list)
     if categories_list:
@@ -111,7 +112,6 @@ def search():
         numer_dict = jac.get_rel_jokes(cat_jokes)
 
         # to discuss - this seems inefficient. do you have to filter one by one? theres prob a psql command
-        rel_jokes_meta = {}  # dictionary where key = joke_id, value = joke
         for joke_id in numer_dict.keys():
             rel_jokes_meta[joke_id] = Joke.query.filter_by(id=joke_id).first()
 
@@ -124,11 +124,11 @@ def search():
     print("QUERY IS: ---------")
     print(query)
     if query:
-        results_cos = cos.fast_cossim(query, inv_idx, idf_dict)
+        results_cos, rel_jokes_meta = cos.fast_cossim(query, inv_idx, idf_dict, rel_jokes_meta)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     advanced = True if (categories or weighting or sizes or maturity) else False
-    results, cos_weight, jac_weight, sc_weight = ressy.weight(results_jac, results_cos, weighting, advanced)
+    results, cos_weight, jac_weight, sc_weight = ressy.weight(results_jac, results_cos, weighting, advanced, rel_jokes_meta)
     print("WEIGHTING IS: ---------")
     str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_weight, jac_weight, sc_weight)
     print(str_weighting)

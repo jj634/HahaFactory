@@ -5,7 +5,6 @@ from . import cat_jaccard as jac
 from . import output_res as ressy
 from . import sizing as siz
 from . import lucky as lk
-from . import cache as che
 import random
 from . import *
 

@@ -46,7 +46,7 @@ def subst_cost(query, message, i, j):
         return 2
 
 
-def edit_matrix(query, message):
+def edit_matrix(query, message, curr_max):
     m = len(query) + 1
     n = len(message) + 1
 
@@ -56,20 +56,25 @@ def edit_matrix(query, message):
     for j in range(1, n):
         chart[0, j] = chart[0, j-1] + deletion_cost(message, j)
     for i in range(1, m):
+        exceeded_max = True
         for j in range(1, n):
             chart[i, j] = min(
                 chart[i-1, j] + deletion_cost(query, i),
                 chart[i, j-1] + insertion_cost(message, j),
                 chart[i-1, j-1] + subst_cost(query, message, i, j)
             )
+            exceeded_max = exceeded_max and (chart[i, j] >= curr_max)
+        if exceeded_max:
+            chart[len(query), len(message)] = curr_max + 1
+            return chart
     return chart
 
 
-def edit_distance(query, message):
+def edit_distance(query, message, max):
     query = query.lower()
     message = message.lower()
 
-    matrix = edit_matrix(query, message)
+    matrix = edit_matrix(query, message, max)
     return matrix[(len(query), len(message))]
 
 
@@ -79,12 +84,14 @@ def closest_word(query, alt_opts):
     alt_opts and dist is the edit distance. 
     """
     result = []
+    curr_min = math.inf
     for i in range(len(alt_opts)):
         if abs(len(query) - len(alt_opts[i])) <= 3:
-            dist = edit_distance(query, alt_opts[i])
+            dist = edit_distance(query, alt_opts[i], curr_min)
+            if dist < curr_min:
+                curr_min = dist
             result.append((alt_opts[i], dist))
     result.sort(key=lambda t: t[1])
-    # return result[0]
     if result: 
         return result[0]
     else: 

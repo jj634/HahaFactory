@@ -28,8 +28,7 @@ def jaccard_sim(query, num_dict, jokes_meta):
 
     """
     result = {}
-    for doc in num_dict.keys():
-        jaccard_measure = num_dict[doc] / (len(set(jokes_meta[doc].categories).union(set(query))))
-        result[doc] = jaccard_measure
-    # result = sorted(result, key = lambda x : x[1], reverse = True)
-    return result
+    for joke in jokes_meta: 
+        joke_id = joke.id
+        result[joke_id] = num_dict[joke_id]/(len(set(joke.categories).union(set(query))))
+    return result   

@@ -52,13 +52,14 @@ def search():
     weighting = request.args.get('score') or 0 
     categories = request.args.getlist('categories')
     sizes = request.args.getlist('sizes')
-    maturity = request.args.get('maturity') or ''
+    maturity = request.args.get('maturity')
     typo = False
 
     print("original query ------")
     print(query)
 
-    #----------- PARSING -----------#
+    #----------- FIND TYPOS -----------#
+    print("Finding Typo.....")
     # maps lowered text to actual category names
     parse_dict = pl.parsing_dict(cat_options)
     p_cats = []
@@ -82,12 +83,15 @@ def search():
             elif cat_suggestion is None: 
                 term = free_suggestion[0]
             elif free_suggestion is None: 
-                term = cat_suggest_tuple[0]
+                term = cat_suggestion[0]
             elif cat_suggestion[1] < free_suggestion[1]: 
-                term = cat_suggest_tuple[0]
+                term = cat_suggestion[0]
             else: 
                 term = free_suggestion[0]
             query.insert(index_typos[index], term)
+
+     #----------- PARSING -----------#
+    print("Parsing.....")
     if query:
         query_string = " ".join(query)
         p_cats = pl.parse(query_string, cat_options, parse_dict)
@@ -110,13 +114,9 @@ def search():
         # dictionary with key = joke_id and value = numerator
         numer_dict = jac.get_rel_jokes(cat_jokes)
 
-        # to discuss - this seems inefficient. do you have to filter one by one? theres prob a psql command
-        rel_jokes_meta = {}  # dictionary where key = joke_id, value = joke
-        for joke_id in numer_dict.keys():
-            rel_jokes_meta[joke_id] = Joke.query.filter_by(id=joke_id).first()
-
+        rel_jokes = Joke.query.filter(Joke.id.in_(numer_dict.keys())).all()
         results_jac = jac.jaccard_sim(
-            categories_list, numer_dict, rel_jokes_meta)
+            categories_list, numer_dict, rel_jokes)
 
     #--------------------- COSINE ---------------------#
     # dictionary where key= joke_id, value = (joke_dict, cos_sim)
@@ -185,6 +185,7 @@ def search():
         results = ressy.special_weighting(results, float(weighting))
         results = sorted(results, key=lambda x: (x['rand']), reverse=True)
 
+    #--------------------- CREATE NEW TYPO STRING FOR FRONTEND DISPLAY ---------------------#
     typo_string = " ".join(query)
     if typo:
         print("TYPO EXISTS- New string below: -------------")

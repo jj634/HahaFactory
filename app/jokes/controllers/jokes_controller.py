@@ -61,6 +61,11 @@ def search():
     print("original query ------")
     print(query)
 
+    cache_key = (str(query)+str(categories)+str(weighting)+str(sizes)+str(maturity))
+
+    if cache_key in cache:
+        return cache[cache_key]
+
     #----------- FIND TYPOS -----------#
     print("Finding Typo.....")
     # maps lowered text to actual category names
@@ -102,8 +107,6 @@ def search():
     categories_list = categories + p_cats
     categories_list = list(set(categories_list))
 
-    if (str(query)+str(categories_list)+str(weighting)+str(sizes)+str(maturity)) in cache:
-        return cache[str(query)+str(categories_list)+str(weighting)+str(sizes)+str(maturity)]
 
     #--------------------- JACCARD ---------------------#
     # dictionary key = joke_id, value = (joke_dict, jac_sim)
@@ -206,11 +209,11 @@ def search():
         print("TYPO EXISTS- New string below: -------------")
         print(typo_string)
 
-    cache[str(query)+str(categories_list)+str(weighting)+str(sizes)+str(maturity)] = {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight, "query" : query}
+    cache[cache_key] = {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight, "query" : query}
     with open('./cache.json', 'w') as f:
         json.dump(cache, f)
 
-    return cache[str(query)+str(categories_list)+str(weighting)+str(sizes)+str(maturity)]
+    return cache[cache_key]
 
 
 @jokes.route('/cat-options', methods=['GET'])

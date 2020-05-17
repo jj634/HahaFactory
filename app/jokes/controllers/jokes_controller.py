@@ -5,6 +5,7 @@ from . import cat_jaccard as jac
 from . import output_res as ressy
 from . import sizing as siz
 from . import lucky as lk
+from . import cache as che
 import random
 from . import *
 
@@ -46,6 +47,8 @@ with open('./idf_dict.json') as f:
 with open('./cache.json') as f:
     cache = json.load(f)
 
+real_cache = {0: cache}
+
 @jokes.route('/search', methods=['GET'])
 def search():
     cat_options = sorted([cat.category for cat in Categories.query.all()])
@@ -61,10 +64,10 @@ def search():
     print("original query ------")
     print(query)
 
-    cache_key = (str(query)+str(categories)+str(weighting)+str(sizes)+str(maturity))
+    cache_key = str(query)+str(categories)+str(weighting)+str(sizes)+str(maturity)
 
-    if cache_key in cache:
-        return cache[cache_key]
+    if cache_key in real_cache[0]:
+        return real_cache[0][cache_key]
 
     #----------- FIND TYPOS -----------#
     print("Finding Typo.....")
@@ -209,11 +212,19 @@ def search():
         print("TYPO EXISTS- New string below: -------------")
         print(typo_string)
 
-    cache[cache_key] = {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight, "query" : query}
-    with open('./cache.json', 'w') as f:
-        json.dump(cache, f)
+    real_cache[0][cache_key] = {"jokes": results, "typo": typo, "typo_query" : typo_string, "cosine": cos_weight, "jaccard": jac_weight, "score": sc_weight, "query" : query}
 
-    return cache[cache_key]
+    if len(cache) > 100:
+        tmp_cache = {}
+        new_keys = list(real_cache[0].items())[50:]
+        for i, j in new_keys:
+            tmp_cache[i] = j
+        real_cache[0] = tmp_cache
+
+    with open('./cache.json', 'w') as f:
+        json.dump(real_cache[0], f)
+
+    return real_cache[0][cache_key]
 
 
 @jokes.route('/cat-options', methods=['GET'])

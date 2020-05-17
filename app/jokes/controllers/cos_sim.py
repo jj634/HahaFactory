@@ -1,7 +1,7 @@
 from . import *
 import math
 
-def fast_cossim(query, inverted_index, idf):
+def fast_cossim(query, inverted_index, idf, rel_jokes_meta):
     """
         Search the collection of documents for the given query
         Inputs: 
@@ -12,6 +12,8 @@ def fast_cossim(query, inverted_index, idf):
         Output: list of tuples tuple = (joke, sim_score)
     """
     result = {}  # dictionary mapping doc_id to cosine similarity measure
+    jokes = []
+    acc_joke_meta = rel_jokes_meta
     assert type(query) is list
 
     # make sure query is a string list!!
@@ -31,7 +33,9 @@ def fast_cossim(query, inverted_index, idf):
 
     q_norm = math.sqrt(q_norm)
     for doc in result:
-        norm = Joke.query.filter_by(id=doc).first().norm
+        if doc not in acc_joke_meta: # NEW: add joke metadata to accumulator
+            acc_joke_meta[doc] = Joke.query.filter_by(id=doc).first()
+        norm = acc_joke_meta[doc].norm
         result[doc] = result[doc] / (q_norm * float(norm))
 
-    return result
+    return result, acc_joke_meta

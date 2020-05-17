@@ -15,11 +15,11 @@ class JokeForm extends React.Component {
             isLoaded: false, // indicates if categories have been loaded from API GET request
             cat_options: [],
 
-            categories: this.props.categories || [],
-            search: this.props.search || '',
-            score: this.props.score || '',
-            sizes: this.props.sizes || [],
-            maturity: this.props.maturity || '',
+            categories: [],
+            search: '',
+            score: '',
+            sizes: [],
+            maturity: '',
 
             displayMessage: false,
             isOpen: false,
@@ -30,8 +30,8 @@ class JokeForm extends React.Component {
         this.handleLucky = this.handleLucky.bind(this);
     }
 
-    isOpen(){
-        const { categories, score, sizes, maturity} = this.props
+    isOpen() {
+        const { categories, score, sizes, maturity } = this.props
         const cat_empty = categories === null || categories.length === 0
         const score_empty = score === null || score === ""
         const maturity_empty = maturity === null || maturity === ""
@@ -47,18 +47,18 @@ class JokeForm extends React.Component {
         const { categories, score, sizes, maturity, search } = this.props
         axios({
             method: 'GET',
-            url: `/api/cat-options`,
-            // url: `http://localhost:5000/api/cat-options`,
+            // url: `/api/cat-options`,
+            url: `http://localhost:5000/api/cat-options`,
         })
             .then((response) => {
                 this.setState({
                     cat_options: response.data.categories,
                     isLoaded: true,
-                    categories: categories,
-                    score: score, 
-                    sizes: sizes,
-                    maturity: maturity,
-                    search: search
+                    categories: categories || [],
+                    score: score || '',
+                    sizes: sizes || [],
+                    maturity: maturity || '',
+                    search: search || ''
                 })
             })
             .catch(err =>
@@ -71,7 +71,7 @@ class JokeForm extends React.Component {
         this.setState({ [name]: value })
     }
 
-    tonewURL= (search, categories, score, sizes, maturity)  => {
+    tonewURL = (search, categories, score, sizes, maturity) => {
         const params = new URLSearchParams()
 
         const search_empty = search === null || search === ""
@@ -80,11 +80,7 @@ class JokeForm extends React.Component {
         const maturity_empty = maturity === null || maturity === ""
         const size_empty = sizes === null || sizes.length === 0
 
-        if ((search_empty && cat_empty && size_empty && maturity_empty) && (!score_empty)) {
-            this.setState({
-                displayMessage: true
-            })
-        } else if ((search_empty && cat_empty && size_empty && maturity_empty && score_empty)) {
+        if ((search_empty && cat_empty && size_empty && maturity_empty)) {
             this.setState({
                 displayMessage: true
             })
@@ -134,7 +130,7 @@ class JokeForm extends React.Component {
         )
     }
 
-    focus(){
+    focus() {
         if (this.advanced) {
             this.advanced.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
         };
@@ -148,10 +144,10 @@ class JokeForm extends React.Component {
             }
         ))
 
-        const random_inputs= random.concat(cat_options)
+        const random_inputs = random.concat(cat_options)
         var item = random_inputs[Math.floor(Math.random() * random_inputs.length)];
 
-        const cat = item.categories || [] 
+        const cat = item.categories || []
         const search = item.search || ''
         const sizes = item.sizes || []
         const maturity = item.maturity || ''
@@ -182,85 +178,84 @@ class JokeForm extends React.Component {
         const icon = this.state.isOpen ? 'chevron down' : 'chevron right'
 
         return (
-        <div ref={this.advanced}>
-            <br/>
-            <Form onSubmit={this.handleSubmit} size="large" key="large" >
-                <Form.Input
-                    placeholder="Enter your search"
-                    name="search"
-                    type="text"
-                    onChange={this.handleChange}
-                    value = {this.state.search}
-                    clearable
-                    focus
-                />
-                < Accordion>
-                    <Accordion.Title onClick={this.handleAdvanced}>
-                        <Icon name={icon} />Advanced Search
+            <div ref={this.advanced}>
+                <br />
+                <Form onSubmit={this.handleSubmit} size="large" key="large" >
+                    <Form.Input
+                        placeholder="Enter your search"
+                        name="search"
+                        type="text"
+                        onChange={this.handleChange}
+                        value={this.state.search}
+                        focus
+                    />
+                    < Accordion>
+                        <Accordion.Title onClick={this.handleAdvanced}>
+                            <Icon name={icon} />Advanced Search
                     </Accordion.Title>
-                </Accordion>
-                {this.state.isOpen
-                    ? <div>
-                        < Form.Dropdown
-                            closeOnChange
-                            placeholder="Select Categories"
-                            name="categories"
-                            label="Categories"
-                            multiple
-                            search
-                            selection
-                            options={categoryList}
-                            onChange={this.handleChange}
-                            value = {this.state.categories}
-                            clearable
-                            focus
-                        />
-
-                        <Form.Group widths='equal'>
-                            <Form.Field>
-                                <p><b>Relevancy       vs.      Funny Factor</b></p>
-                                <Slider discrete color="white" settings={slider_settings} />
-                            </Form.Field>
-
-                            <Form.Dropdown
-                                placeholder="Select Maturity"
-                                name="maturity"
-                                label="Maturity Rating"
-                                selection
-                                clearable
-                                options={maturityList}
-                                onChange={this.handleChange}
-                                value = {this.state.maturity}
-                            />
-
-                            <Form.Dropdown
-                                placeholder="Select Joke Length"
-                                name="sizes"
-                                label="Joke Length"
-                                selection
-                                clearable
+                    </Accordion>
+                    {this.state.isOpen
+                        ? <div>
+                            < Form.Dropdown
+                                closeOnChange
+                                placeholder="Select Categories"
+                                name="categories"
+                                label="Categories"
                                 multiple
-                                options={sizeList}
+                                search
+                                selection
+                                options={categoryList}
                                 onChange={this.handleChange}
-                                value = {this.state.sizes}
+                                value={this.state.categories}
+                                clearable
                                 focus
                             />
-                        </Form.Group>
-                    </div>
-                    : null
-                }
-                {this.state.displayMessage
-                    ?
-                    <h5 style={{ color: 'black' }}>Please provide an input for "Keywords", "Categories", "Maturity" or "Joke Length" to search.</h5>
-                    : null
-                }
 
-                <Form.Group inline style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Form.Button secondary type="submit" size="large">Find Jokes</Form.Button>
-                    <Form.Button primary size="large"onClick = {this.handleLucky} >I'm Feeling Funny!</Form.Button>
-                </Form.Group>
-            </Form >
-        </div>
+                            <Form.Group widths='equal'>
+                                <Form.Field>
+                                    <p><b>Relevancy       vs.      Funny Factor</b></p>
+                                    <Slider discrete color="white" settings={slider_settings} />
+                                </Form.Field>
+
+                                <Form.Dropdown
+                                    placeholder="Select Maturity"
+                                    name="maturity"
+                                    label="Maturity Rating"
+                                    selection
+                                    clearable
+                                    options={maturityList}
+                                    onChange={this.handleChange}
+                                    value={this.state.maturity}
+                                />
+
+                                <Form.Dropdown
+                                    placeholder="Select Joke Length"
+                                    name="sizes"
+                                    label="Joke Length"
+                                    selection
+                                    clearable
+                                    multiple
+                                    options={sizeList}
+                                    onChange={this.handleChange}
+                                    value={this.state.sizes}
+                                    focus
+                                />
+                            </Form.Group>
+                        </div>
+                        : null
+                    }
+                    {this.state.displayMessage
+                        ?
+                        <h5 style={{ color: 'black' }}>Please provide an input for "Keywords", "Categories", "Maturity" or "Joke Length" to search.</h5>
+                        : null
+                    }
+
+                    <Form.Group inline style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Form.Button secondary type="submit" size="large">Find Jokes</Form.Button>
+                        <Form.Button primary size="large" onClick={this.handleLucky} >I'm Feeling Funny!</Form.Button>
+                    </Form.Group>
+                </Form >
+            </div>
         )
     }
 }

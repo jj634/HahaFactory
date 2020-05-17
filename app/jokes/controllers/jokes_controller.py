@@ -102,6 +102,10 @@ def search():
     #--------------------- JACCARD ---------------------#
     # dictionary key = joke_id, value = (joke_dict, jac_sim)
     results_jac = {}
+
+    # NEW: accumulate all meta data so we don't do unnecessary database calls
+    rel_jokes_meta = {} # dictionary where key = joke_id, value = joke
+
     print("CATEGORIES ARE: --------")
     print(categories_list)
     if categories_list:
@@ -115,6 +119,7 @@ def search():
         numer_dict = jac.get_rel_jokes(cat_jokes)
 
         rel_jokes = Joke.query.filter(Joke.id.in_(numer_dict.keys())).all()
+
         results_jac = jac.jaccard_sim(
             categories_list, numer_dict, rel_jokes)
 
@@ -124,11 +129,13 @@ def search():
     print("QUERY IS: ---------")
     print(query)
     if query:
-        results_cos = cos.fast_cossim(query, inv_idx, idf_dict)
+        # NEW: add rel_jokes_meta as argument to fast_cossim
+        results_cos, rel_jokes_meta = cos.fast_cossim(query, inv_idx, idf_dict, rel_jokes_meta)
 
     #--------------------- WEIGHTING & FORMATTING ---------------------#
     advanced = True if (categories or weighting or sizes or maturity) else False
-    results, cos_weight, jac_weight, sc_weight = ressy.weight(results_jac, results_cos, weighting, advanced)
+    # NEW: add rel_jokes_meta as an argument to weight
+    results, cos_weight, jac_weight, sc_weight = ressy.weight(results_jac, results_cos, weighting, advanced, rel_jokes_meta)
     print("WEIGHTING IS: ---------")
     str_weighting = "Cosine: {}, Jaccard: {}, Score: {}".format(cos_weight, jac_weight, sc_weight)
     print(str_weighting)

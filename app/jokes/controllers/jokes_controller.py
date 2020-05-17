@@ -119,6 +119,8 @@ def search():
         numer_dict = jac.get_rel_jokes(cat_jokes)
 
         rel_jokes = Joke.query.filter(Joke.id.in_(numer_dict.keys())).all()
+        for joke_id in numer_dict.keys():
+            rel_jokes_meta[joke_id] = Joke.query.filter_by(id=joke_id).first()
 
         results_jac = jac.jaccard_sim(
             categories_list, numer_dict, rel_jokes)

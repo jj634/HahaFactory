@@ -96,7 +96,7 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.isLoaded) {
+    // if (this.state.isLoaded) {
       return (
         <div>
           <div >
@@ -136,12 +136,12 @@ class App extends React.Component {
           </div>
         </div>
       )
-    }
-    else return (
-      <Dimmer active inverted>
-        <Loader size="large" >Loading</Loader>
-      </Dimmer>
-    )
+    // }
+    // else return (
+    //   <Dimmer active inverted>
+    //     <Loader size="large" >Loading</Loader>
+    //   </Dimmer>
+    // )
   }
 }
 

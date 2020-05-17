@@ -1,55 +1,14 @@
 // adapted from: https://pusher.com/tutorials/consume-restful-api-react
 
 import React from 'react'
-import axios from 'axios'
-import { withRouter } from 'react-router-dom'
-
 import { Icon, Label, Popup} from 'semantic-ui-react'
 import Highlighter from "react-highlight-words";
 import Rating from '@material-ui/lab/Rating';
 import { Doughnut } from 'react-chartjs-2';
 import PiChart from './PiChart'
 
-
 class JokeResults extends React.Component {
-  // constructor(props){
-  //   super(props)
-  //   this.state = {
-  //     isLoaded: false, 
-  //     jokes: [], typo: false, 
-  //     typo_query: '', 
-  //     search_query: '',
-  //     query: []
-  //   }
-  // }
-  
-  // componentDidMount(){
-  //   const URLParams = new URLSearchParams(this.props.location.search)
-  //   const search_param = URLParams.get("search")
-
-  //   axios({
-  //     method: 'GET',
-  //     // url: `/api/search`,
-  //     url: `http://localhost:5000/api/search`,
-  //     params: URLParams
-  //   })
-  //     .then((response) => {
-  //       this.setState({
-  //         isLoaded: true,
-  //         jokes: response.data.jokes,
-  //         typo: response.data.typo,
-  //         typo_query: response.data.typo_query,
-  //         search_query: search_param,
-  //         query: response.data.query,
-  //       })
-  //     })
-  //     .catch(err =>
-  //       console.log(err)
-  //     );
-  // }
-
   render() {
-
     const {jokes, query} = this.props
     if (jokes.length === 0) {
       return (
@@ -94,11 +53,10 @@ class JokeResults extends React.Component {
         <br></br>
         </div> 
       : null
-      
       ))}
       </React.Fragment>
     )
   }
 }
 
-export default withRouter(JokeResults);
+export default JokeResults;

@@ -33,7 +33,7 @@ def fast_cossim(query, inverted_index, idf, rel_jokes_meta):
 
     q_norm = math.sqrt(q_norm)
     for doc in result:
-        if doc not in acc_joke_meta:
+        if doc not in acc_joke_meta: # NEW: add joke metadata to accumulator
             acc_joke_meta[doc] = Joke.query.filter_by(id=doc).first()
         norm = acc_joke_meta[doc].norm
         result[doc] = result[doc] / (q_norm * float(norm))

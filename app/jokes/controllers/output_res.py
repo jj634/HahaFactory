@@ -47,7 +47,7 @@ def weight(jac_res, cos_res, min_score, advanced, rel_jokes_meta):
 
     for joke_id in jacky.union(cos_key):
         # to discuss - we are making 3 database calls for jaccard categories, this weighting, and metadata. that seems inefficient
-        joke_meta = rel_jokes_meta[joke_id]
+        joke_meta = rel_jokes_meta[joke_id] # NEW: delete all database calls by using rel_jokes_meta
 
         cos_score = cos_weight * cos_res.get(joke_id, 0)
         jac_score = jac_weight * jac_res.get(joke_id, 0)

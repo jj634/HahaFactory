@@ -46,7 +46,7 @@ def subst_cost(query, message, i, j):
         return 2
 
 
-def edit_matrix(query, message, curr_max):
+def edit_matrix(query, message, thresh):
     m = len(query) + 1
     n = len(message) + 1
 
@@ -63,18 +63,20 @@ def edit_matrix(query, message, curr_max):
                 chart[i, j-1] + insertion_cost(message, j),
                 chart[i-1, j-1] + subst_cost(query, message, i, j)
             )
-            exceeded_max = exceeded_max and (chart[i, j] >= curr_max)
-        if exceeded_max:
-            chart[len(query), len(message)] = curr_max + 1
+            # NEW : Check to see if any are below the thresh
+            exceeded_max = exceeded_max and (chart[i, j] >= thresh)
+        # NEW : exceeded_max means already not the minimum edit_distance, won't be the typo
+        if exceeded_max: # NEW : this means all exceeded the maximum
+            chart[len(query), len(message)] = thresh + 1 # NEW : set it to above the maximum
             return chart
     return chart
 
 
-def edit_distance(query, message, max):
+def edit_distance(query, message, thresh):
     query = query.lower()
     message = message.lower()
 
-    matrix = edit_matrix(query, message, max)
+    matrix = edit_matrix(query, message, thresh)
     return matrix[(len(query), len(message))]
 
 
@@ -84,7 +86,7 @@ def closest_word(query, alt_opts):
     alt_opts and dist is the edit distance. 
     """
     result = []
-    curr_min = math.inf
+    curr_min = math.inf # NEW: Keep track of the miniumum edit distance
     for i in range(len(alt_opts)):
         if abs(len(query) - len(alt_opts[i])) <= 3:
             dist = edit_distance(query, alt_opts[i], curr_min)

@@ -40,7 +40,6 @@ class App extends React.Component {
 
   fetchResults() {
     const URLParams = new URLSearchParams(window.location.search)
-
     const category_param = URLParams.getAll("categories")
     const score_param = URLParams.get("score")
     const search_param = URLParams.get("search")
@@ -96,7 +95,7 @@ class App extends React.Component {
   }
 
   render() {
-    // if (this.state.isLoaded) {
+    if (this.state.isLoaded) {
       return (
         <div>
           <div >
@@ -113,7 +112,7 @@ class App extends React.Component {
                     <img src={logo} className="App-logo" alt="logo" />
                   </header>
 
-                  <Form score={this.state.score} categories={this.state.categories} search={this.state.search} sizes={this.state.sizes} maturity={this.state.maturity} />
+                  <Form score={this.state.score} categories={this.state.categories} search={this.state.search} sizes={this.state.sizes} maturity={this.state.maturity} /> 
 
                 </Col>
               </Row>
@@ -136,12 +135,12 @@ class App extends React.Component {
           </div>
         </div>
       )
-    // }
-    // else return (
-    //   <Dimmer active inverted>
-    //     <Loader size="large" >Loading</Loader>
-    //   </Dimmer>
-    // )
+    }
+    else return (
+      <Dimmer active inverted>
+        <Loader size="large" >Loading</Loader>
+      </Dimmer>
+    )
   }
 }
 

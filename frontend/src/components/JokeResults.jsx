@@ -9,6 +9,7 @@ import PiChart from './PiChart'
 
 class JokeResults extends React.Component {
   render() {
+    console.log(this.props)
     const {jokes, query} = this.props
     if (jokes.length === 0) {
       return (

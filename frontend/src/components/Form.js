@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from "react-router";
 
 import { Form, Accordion, Icon } from 'semantic-ui-react'
 import { Slider } from "react-semantic-ui-range";
@@ -159,6 +159,7 @@ class JokeForm extends React.Component {
     }
 
     render() {
+        console.log(this.props)
         const categoryList = this.createDropDownList(this.state.cat_options)
         const sizeList = this.createDropDownList(sizes)
         const maturityList = this.createDropDownList(maturities)

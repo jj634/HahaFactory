@@ -88,7 +88,7 @@ def search():
     # Joke.testFunct()
 	return render_template('search.html', name=project_name, netid=net_id, output_message=search_params, data=final, cat_options = cat_options)
 
-
-@irsystem.route('/', methods=['GET'])
-def sendhome():
-    return render_template('index.html')
+@irsystem.route('/', defaults={'path': ''})
+@irsystem.route('/<path:path>')
+def catch_all(path):
+  return render_template("index.html")

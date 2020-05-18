@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 
 import { Form, Accordion, Icon } from 'semantic-ui-react'
 import { Slider } from "react-semantic-ui-range";
+
 import sizes from '../images/size';
 import maturities from '../images/maturity'
 import random from '../images/random'
@@ -12,7 +13,7 @@ class JokeForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            isLoaded: false, // indicates if categories have been loaded from API GET request
+            isLoaded: false,
             cat_options: [],
 
             categories: [],
@@ -32,8 +33,6 @@ class JokeForm extends React.Component {
     }
 
     fillForm() {
-        console.log(this.props.location.search)
-        // const { categories, score, sizes, maturity, search } = this.props
         const URLParams = new URLSearchParams(this.props.location.search)
         const category_param = URLParams.getAll("categories")
         const score_param = URLParams.get("score")
@@ -42,7 +41,8 @@ class JokeForm extends React.Component {
         const maturity_param = URLParams.get("maturity")
 
         const cat_empty = category_param === null || category_param.length === 0
-        const score_empty = score_param === null || score_param === ""
+        const score_empty = score_param === null || score_param === "" || score_param === 0.25
+        console.log(score_empty)
         const maturity_empty = maturity_param === null || maturity_param === ""
         const size_empty = size_param === null || size_param.length === 0
 
@@ -58,7 +58,7 @@ class JokeForm extends React.Component {
                     cat_options: response.data.categories,
                     isLoaded: true,
                     categories: category_param || [],
-                    score: score_param || '',
+                    score: score_param || 0.25,
                     sizes: size_param || [],
                     maturity: maturity_param || '',
                     search: search_param || '',
@@ -75,9 +75,7 @@ class JokeForm extends React.Component {
         this.fillForm()
     }
 
-
     static getDerivedStateFromProps(nextProps, prevState) {
-        console.log("getderivedState")
         const newURLParams = new URLSearchParams(nextProps.location.search)
         const oldURLParams = prevState.URLParam || new URLSearchParams()
         newURLParams.sort()
@@ -86,7 +84,7 @@ class JokeForm extends React.Component {
         const old_URL = oldURLParams.toString()
 
         return new_URL !== old_URL
-            ? { isLoaded: false }
+            ? { isLoaded: false, displayMessage: false }
             : null
     }
 
@@ -145,6 +143,7 @@ class JokeForm extends React.Component {
     }
 
     handleAdvanced = (e, titleProps) => {
+        e.preventDefault();
         const { isOpen } = this.state
         const newActive = !isOpen
         this.setState({ isOpen: newActive })
@@ -161,9 +160,10 @@ class JokeForm extends React.Component {
     }
 
     focus() {
-        if (this.advanced) {
+        console.log("fucos")
+        // if (this.advanced) {
             this.advanced.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        };
+        // };
     }
 
     handleLucky(event) {
@@ -184,17 +184,13 @@ class JokeForm extends React.Component {
         this.tonewURL(search, cat, 0.25, sizes, maturity)
     }
 
-    // componentDidUpdate() {
-    //     this.focus()
-    // }
-
     render() {
         const categoryList = this.createDropDownList(this.state.cat_options)
         const sizeList = this.createDropDownList(sizes)
         const maturityList = this.createDropDownList(maturities)
 
         const slider_settings = {
-            start: this.state.score || 0.25,
+            start: this.state.score,
             min: 0,
             max: 0.5,
             step: 0.125,
@@ -265,6 +261,7 @@ class JokeForm extends React.Component {
                                     selection
                                     clearable
                                     multiple
+                                    closeOnChange
                                     options={sizeList}
                                     onChange={this.handleChange}
                                     value={this.state.sizes}

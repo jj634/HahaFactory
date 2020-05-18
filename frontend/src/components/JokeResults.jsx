@@ -8,6 +8,24 @@ import { Doughnut } from 'react-chartjs-2';
 import PiChart from './PiChart'
 
 class JokeResults extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isLoaded: false,
+      jokes: [],
+      typo: false,
+      typo_query: '',
+      query: [],
+
+      categories: [],
+      score: '',
+      search: '',
+      sizes: [],
+      maturity: '',
+      URLParam: null,
+    }
+  }
+
   render() {
     console.log(this.props)
     const {jokes, query} = this.props

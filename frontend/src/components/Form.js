@@ -23,6 +23,7 @@ class JokeForm extends React.Component {
 
             displayMessage: false,
             isOpen: false,
+            URLParam: null,
         }
         this.advanced = React.createRef()
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,21 +31,23 @@ class JokeForm extends React.Component {
         this.handleLucky = this.handleLucky.bind(this);
     }
 
-    isOpen() {
-        const { categories, score, sizes, maturity } = this.props
-        const cat_empty = categories === null || categories.length === 0
-        const score_empty = score === null || score === ""
-        const maturity_empty = maturity === null || maturity === ""
-        const size_empty = sizes === null || sizes.length === 0
+    fillForm() {
+        console.log(this.props.location.search)
+        // const { categories, score, sizes, maturity, search } = this.props
+        const URLParams = new URLSearchParams(this.props.location.search)
+        const category_param = URLParams.getAll("categories")
+        const score_param = URLParams.get("score")
+        const search_param = URLParams.get("search")
+        const size_param = URLParams.getAll("sizes")
+        const maturity_param = URLParams.get("maturity")
+
+        const cat_empty = category_param === null || category_param.length === 0
+        const score_empty = score_param === null || score_param === ""
+        const maturity_empty = maturity_param === null || maturity_param === ""
+        const size_empty = size_param === null || size_param.length === 0
 
         const open = !cat_empty || !score_empty || !maturity_empty || !size_empty
-        this.setState({
-            isOpen: open
-        })
-    }
 
-    componentDidMount() {
-        const { categories, score, sizes, maturity, search } = this.props
         axios({
             method: 'GET',
             // url: `/api/cat-options`,
@@ -54,17 +57,44 @@ class JokeForm extends React.Component {
                 this.setState({
                     cat_options: response.data.categories,
                     isLoaded: true,
-                    categories: categories || [],
-                    score: score || '',
-                    sizes: sizes || [],
-                    maturity: maturity || '',
-                    search: search || ''
+                    categories: category_param || [],
+                    score: score_param || '',
+                    sizes: size_param || [],
+                    maturity: maturity_param || '',
+                    search: search_param || '',
+                    isOpen: open,
+                    URLParam: URLParams
                 })
             })
             .catch(err =>
                 console.log(err)
             );
-        this.isOpen();
+    }
+
+    componentDidMount() {
+        this.fillForm()
+    }
+
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("getderivedState")
+        const newURLParams = new URLSearchParams(nextProps.location.search)
+        const oldURLParams = prevState.URLParam || new URLSearchParams()
+        newURLParams.sort()
+        oldURLParams.sort()
+        const new_URL = newURLParams.toString()
+        const old_URL = oldURLParams.toString()
+
+        return new_URL !== old_URL
+            ? { isLoaded: false }
+            : null
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.state.isLoaded === false) {
+            this.fillForm();
+        }
+        this.focus()
     }
 
     handleChange = (e, { name, value }) => {
@@ -154,12 +184,11 @@ class JokeForm extends React.Component {
         this.tonewURL(search, cat, 0.25, sizes, maturity)
     }
 
-    componentDidUpdate() {
-        this.focus()
-    }
+    // componentDidUpdate() {
+    //     this.focus()
+    // }
 
     render() {
-        console.log(this.props)
         const categoryList = this.createDropDownList(this.state.cat_options)
         const sizeList = this.createDropDownList(sizes)
         const maturityList = this.createDropDownList(maturities)

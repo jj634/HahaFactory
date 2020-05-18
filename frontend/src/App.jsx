@@ -95,7 +95,7 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.isLoaded) {
+    // if (this.state.isLoaded) {
       return (
         <div>
           <div >
@@ -112,8 +112,8 @@ class App extends React.Component {
                     <img src={logo} className="App-logo" alt="logo" />
                   </header>
 
-                  <Form score={this.state.score} categories={this.state.categories} search={this.state.search} sizes={this.state.sizes} maturity={this.state.maturity} /> 
-
+                  {/* <Form score={this.state.score} categories={this.state.categories} search={this.state.search} sizes={this.state.sizes} maturity={this.state.maturity} />  */}
+                  <Form/>
                 </Col>
               </Row>
               <Row>
@@ -129,18 +129,18 @@ class App extends React.Component {
                       <h4> We are showing results for <b>"{this.state.typo_query}"</b>.</h4>
                     </div>
                     : null}
-                  <JokeResults jokes={this.state.jokes} query={this.state.query} />           </Col>
+                  {this.state.isLoaded ? <JokeResults jokes={this.state.jokes} query={this.state.query} /> : null }         </Col>
               </Row>
             </Container >
           </div>
         </div>
       )
-    }
-    else return (
-      <Dimmer active inverted>
-        <Loader size="large" >Loading</Loader>
-      </Dimmer>
-    )
+    // }
+    // else return (
+      // <Dimmer active inverted>
+      //   <Loader size="large" >Loading</Loader>
+      // </Dimmer>
+    // )
   }
 }
 

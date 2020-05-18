@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 
 import { Form, Accordion, Icon } from 'semantic-ui-react'
 import { Slider } from "react-semantic-ui-range";
+
 import sizes from '../images/size';
 import maturities from '../images/maturity'
 import random from '../images/random'
@@ -47,8 +48,8 @@ class JokeForm extends React.Component {
         const { categories, score, sizes, maturity, search } = this.props
         axios({
             method: 'GET',
-            // url: `/api/cat-options`,
-            url: `http://localhost:5000/api/cat-options`,
+            url: `/api/cat-options`,
+            // url: `http://localhost:5000/api/cat-options`,
         })
             .then((response) => {
                 this.setState({
@@ -192,7 +193,7 @@ class JokeForm extends React.Component {
                     />
                     < Accordion>
                         <Accordion.Title onClick={this.handleAdvanced}>
-                            <Icon name={icon} />Advanced Search
+                            <h4><Icon name={icon} /> Advanced Search</h4>
                     </Accordion.Title>
                     </Accordion>
                     {this.state.isOpen
@@ -214,7 +215,7 @@ class JokeForm extends React.Component {
 
                             <Form.Group widths='equal'>
                                 <Form.Field>
-                                    <p><b>Relevancy       vs.      Funny Factor</b></p>
+                                    <p><b>Relevancy &emsp;vs. &nbsp;&ensp;Funny Factor</b></p>
                                     <Slider discrete color="white" settings={slider_settings} />
                                 </Form.Field>
 
@@ -240,6 +241,7 @@ class JokeForm extends React.Component {
                                     onChange={this.handleChange}
                                     value={this.state.sizes}
                                     focus
+                                    closeOnChange
                                 />
                             </Form.Group>
                         </div>

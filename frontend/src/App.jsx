@@ -6,12 +6,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/main.css';
 import './css/App.css';
 
-// images, lists
-import logo from './images/operator.png';
-
 // components
 import Form from './components/Form'
 import JokeResults from './components/JokeResults';
+import Logo from './components/Logo'
 
 import { Row, Col } from 'react-bootstrap'
 import { Dimmer, Loader, Container, Button } from 'semantic-ui-react'
@@ -48,8 +46,8 @@ class App extends React.Component {
 
     axios({
       method: 'GET',
-      // url: `/api/search`,
-      url: `http://localhost:5000/api/search`,
+      url: `/api/search`,
+      // url: `http://localhost:5000/api/search`,
       params: URLParams
     })
       .then((response) => {
@@ -99,21 +97,14 @@ class App extends React.Component {
       return (
         <div>
           <div >
-            <Button style={{ margin: '10px' }} onClick={() => window.open("http://hahafactory-og.herokuapp.com/", "_blank")}> First Prototype </Button>
-            <Button style={{ margin: '10px' }} onClick={() => window.open("http://hahafactory-v2.herokuapp.com/", "_blank")}> Second Prototype </Button>
+            <Button style={{ margin: '5px' }} onClick={() => window.open("/about", "_blank")}> About </Button>
           </div>
           <div style={{ alignItems: 'center', justify: 'center', maxWidth: '50%', left: '25%', position: 'absolute' }}>
             <Container>
               <Row className="justify-content-md-center">
                 <Col>
-                  <header className="App-header">
-                    <h1>HahaFactory:</h1>
-                    <h2>Finding Hilarious Jokes for You</h2>
-                    <img src={logo} className="App-logo" alt="logo" />
-                  </header>
-
+                  <Logo/>
                   <Form score={this.state.score} categories={this.state.categories} search={this.state.search} sizes={this.state.sizes} maturity={this.state.maturity} /> 
-
                 </Col>
               </Row>
               <Row>
@@ -129,7 +120,9 @@ class App extends React.Component {
                       <h4> We are showing results for <b>"{this.state.typo_query}"</b>.</h4>
                     </div>
                     : null}
-                  <JokeResults jokes={this.state.jokes} query={this.state.query} />           </Col>
+                  <JokeResults jokes={this.state.jokes} query={this.state.query} search = {this.state.search} />     
+                  <p style={{ textAlign: 'center', marginTop:'13px'}}> Created by: Cathy Xin, Jason Jung, Rachel Han, Suin Jung, Winice Hui</p>
+                  </Col>
               </Row>
             </Container >
           </div>
@@ -138,7 +131,7 @@ class App extends React.Component {
     }
     else return (
       <Dimmer active inverted>
-        <Loader size="large" >Loading</Loader>
+        <Loader size="large" >Loading... </Loader>
       </Dimmer>
     )
   }

@@ -160,7 +160,6 @@ class JokeForm extends React.Component {
     }
 
     render() {
-        console.log(this.props)
         const categoryList = this.createDropDownList(this.state.cat_options)
         const sizeList = this.createDropDownList(sizes)
         const maturityList = this.createDropDownList(maturities)

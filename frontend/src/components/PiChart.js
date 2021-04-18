@@ -1,11 +1,8 @@
 // adapted from: https://pusher.com/tutorials/consume-restful-api-react
 
 import React from 'react'
-import { Icon, Label, Popup } from 'semantic-ui-react'
-import Highlighter from "react-highlight-words";
-import Rating from '@material-ui/lab/Rating';
+import { Icon, Popup } from 'semantic-ui-react'
 import { Doughnut } from 'react-chartjs-2';
-
 
 const PiChart = ({ cos_score, jac_score, sc_score, similarity }) => {
     return (
